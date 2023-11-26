@@ -1,0 +1,36 @@
+
+
+Basic Input / Output in C++
+C++ comes with libraries which provides us with many ways for performing input and output. In C++ input and output is performed in the form of a sequence of bytes or more commonly known as streams.
+
+Input Stream: If the direction of flow of bytes is from the device(for example, Keyboard) to the main memory then this process is called input.
+Output Stream: If the direction of flow of bytes is opposite, i.e. from main memory to device( display screen ) then this process is called output.
+
+
+Header files available in C++ for Input/Output operations are:
+
+iostream: iostream stands for standard input-output stream. This header file contains definitions to objects like cin, cout, cerr, clog ,etc..
+
+iomanip: iomanip stands for input output manipulators. The methods declared in this files are used for manipulating streams. This file contains definitions of setw, setprecision etc.
+
+fstream: This header file mainly describes the file stream. This header file is used to handle the data being read from a file as input or data being written into the file as output.
+
+
+
+The C++ cout statement is the instance of the ostream class. 
+The data needed to be displayed on the screen is inserted in the standard output stream (cout) using the insertion operator(<<).
+
+ C++ cin statement is the instance of the class istream.
+The extraction operator(>>) is used along with the object cin for reading inputs. The extraction operator extracts the data from the object cin which is entered using the keboard.
+
+Un-buffered standard error stream (cerr): The C++ cerr is the standard error stream which is used to output the errors. This is also an instance of the iostream class. As cerr in C++ is un-buffered so it is used when one needs to display the error message immediately. It does not have any buffer to store the error message and display later.
+
+buffered standard error stream (clog): This is also an instance of iostream class and used to display errors but unlike cerr the error is first inserted into a buffer and is stored in the buffer until it is not fully filled. The error message will be displayed on the screen too.
+
+
+
+
+
+
+
+

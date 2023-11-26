@@ -1,0 +1,26 @@
+
+
+
+The macros can take function like arguments, the arguments are not checked for data type.
+
+The macro arguments are not evaluated before macro expansion
+
+The tokens passed to macros can be concatenated using operator ## called Token-Pasting operator.
+
+ A token passed to macro can be converted to a string literal by using # before it.
+
+The macros can be written in multiple lines using ‘\’. The last line doesn’t need to have ‘\’.
+
+he macros with arguments should be avoided as they cause problems sometimes. And Inline functions should be preferred as there is type checking parameter evaluation in inline functions
+
+ Preprocessors also support if-else directives which are typically used for conditional compilation.
+
+ header file may be included more than one time directly or indirectly, this leads to problems of redeclaration of same variables/functions. To avoid this problem, directives like defined, ifdef and ifndef are used.
+
+There are some standard macros which can be used to print program file (__FILE__), Date of compilation (__DATE__), Time of compilation (__TIME__) and Line Number in C code (__LINE__)
+
+ We can remove already defined macros using :
+#undef MACRO_NAME
+
+
+

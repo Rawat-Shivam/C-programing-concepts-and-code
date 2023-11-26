@@ -1,0 +1,176 @@
+
+
+std::slice (Valarray slice selector)
+Valarray slice selector : This class represents a valarray slice selector. It does not contain nor refers to any element – it only describes a selection of elements to be used as an index in valarray::operator[].
+
+std::slice is the selector class that identifies a subset of std::valarray. An object of type std::slice holds three values: the starting index, the stride, and the total number of values in the subset. Objects of type std::slice can be used as indexes with valarray’s operator[].
+
+class slice;
+In simple terms it is used to slice based on an index. A valarray slice is defined by a starting index, a size, and a stride.
+Syntax :
+
+
+
+
+slice( std::size_t start, std::size_t size, std::size_t stride );
+size_t star : is the index of the first element in the selection
+size_t size : is the number of elements in the selection
+stride : is the span that separates the elements selected.
+In given Syntax, by default constructor isequivalent to slice(0, 0, 0). This constructor exists only to allow construction of arrays of slices.
+It constructs a new slice with parameters start, size, stride. This slice will refer to size number of elements, each with the position:
+start + 0*stride
+start + 1*stride
+....
+....
+start + (size-1)*stride
+Example:
+
+slice(1, 5, 4)
+Input :  0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18
+Output : 1 5 9 13 17 
+Explanation : starting from index 1 then next index 1 + 1 * 4 = 5, next index 1 + 2 * 4 = 9, 
+              next index 1 + 3 * 4 = 13, next index 1 + 4 * 4 = 17.
+Therefore, a slice with a stride higher than 1 does not select contiguous elements in the valarray. For example, slice(3, 4, 5) selects the elements 3, 8, 13 and 18.
+
+// C++ program to test the functioning of std::slice 
+#include <iostream> // std::cout 
+#include <cstddef> // std::size_t 
+#include <valarray> // std::valarray, std::slice 
+  
+int main() 
+{ 
+    std::valarray<int> sample(12); 
+    // initialising valarray 
+    for (int i = 0; i < 13; ++i) 
+        sample[i] = i; 
+  
+    // using slice from start 1 and size 3 and stride 4 
+    std::valarray<int> bar = sample[std::slice(2, 3, 4)]; 
+  
+    // display slice result 
+    std::cout << "slice(2, 3, 4):"; 
+    for (std::size_t n = 0; n < bar.size(); n++) 
+        std::cout << ' ' << bar[n]; 
+    std::cout << '\n'; 
+  
+    return 0; 
+} 
+Output:
+
+slice(2, 3, 4): 2 6 10
+Application : A simple application of slice is finding the trace of a matrix.
+
+// C++ program to find trace of a matrix by using std::slice 
+#include <iostream> // std::cout 
+#include <valarray> // std::valarray, std::slice 
+  
+using namespace std; 
+  
+int main() 
+{ 
+    // row and column of matrix 
+    int row = 3, col = 3; 
+  
+    // matrix of size row*col in row major form. 
+    std::valarray<int> matrix(row * col); 
+  
+    // initialising matrix 
+    for (int i = 0; i < row * col; ++i) 
+        matrix[i] = i + 1; 
+  
+    // using slice from start 0 with size as col and stride col+1 
+    std::valarray<int> diagonal = matrix[std::slice(0, col, col + 1)]; 
+  
+    // finding trace using diagonal we got using slice 
+    int index = 0; 
+    for (int i = 0; i < row; i++) { 
+        for (int j = 0; j < col; j++) 
+            std::cout << matrix[index++] << " "; // same as matrix[i][j] 
+        std::cout << endl; 
+    } 
+  
+    int sum = 0; // initialising sum as 0 
+    // calculating trace of matrix 
+    for (int i = 0; i < diagonal.size(); i++) 
+        sum += diagonal[i]; 
+    std::cout << "Trace of matrix is : "; 
+    std::cout << sum << endl; // sum is trace of matrix 
+    return 0; 
+} 
+Output:
+
+1 2 3 
+4 5 6 
+7 8 9 
+Trace of matrix is : 15
+
+
+
+
+
+
+
+std:: valarray class in C++
+C++98 introduced a special container called valarray to hold and provide mathematical operations on arrays efficiently.
+
+It supports element-wise mathematical operations and various forms of generalized subscript operators, slicing and indirect access.
+As compare to vectors, valarrays are efficient in certain mathematical operations than vectors also.
+Public member functions in valarray class :
+
+1. apply() :- This function applies the manipulation given in its arguments to all the valarray elements at once and returns a new valarray with manipulated values.
+
+2. sum() :- This function returns the summation of all the elements of valarrays at once.
+
+
+
+// C++ code to demonstrate the working of  
+// apply() and sum() 
+#include<iostream> 
+#include<valarray> // for valarray functions 
+using namespace std; 
+int main() 
+{ 
+    // Initializing valarray 
+    valarray<int> varr = { 10, 2, 20, 1, 30 }; 
+      
+    // Declaring new valarray 
+    valarray<int> varr1 ; 
+      
+    // Using apply() to increment all elements by 5 
+    varr1 = varr.apply([](int x){return x=x+5;}); 
+      
+    // Displaying new elements value 
+    cout << "The new valarray with manipulated values is : "; 
+    for (int &x: varr1) cout << x << " "; 
+    cout << endl; 
+      
+    // Displaying sum of both old and new valarray 
+    cout << "The sum of old valarray is : "; 
+    cout << varr.sum() << endl; 
+    cout << "The sum of new valarray is : "; 
+    cout << varr1.sum() << endl; 
+  
+    return 0; 
+      
+} 
+Output:
+
+The new valarray with manipulated values is : 15 7 25 6 35 
+The sum of old valarray is : 63
+The sum of new valarray is : 88
+3. min() :- This function returns the smallest element of valarray.
+
+4. max() :- This function returns the largest element of valarray.
+
+
+5. shift() :- This function returns the new valarray after shifting elements by the number mentioned in its argument. If the number is positive, left-shift is applied, if number is negative, right-shift is applied.
+
+6. cshift() :- This function returns the new valarray after circularly shifting(rotating) elements by the number mentioned in its argument. If the number is positive, left-circular shift is applied, if number is negative, right-circular shift is applied.
+
+7. swap() :- This function swaps one valarray with other.
+
+
+
+
+
+

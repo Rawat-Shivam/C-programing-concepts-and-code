@@ -1,0 +1,153 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+std::includes() in C++ STL
+C++ defines a function which can be used to recognise if all the numbers in a container, also exists in other container. This task can be achieved by using “includes()” which is defined in “algorithm” header. The implementations are explained below.
+
+Syntax 1 : Using operator “<"
+
+Template :
+template 
+  bool includes (initer1 beg1, initer1 end1,
+                        initer2 beg2, initer2 end2,)
+Parameters :
+beg1 :  Input iterator to initial position of first sorted sequence.
+end1 :  Input iterator to final position of first sorted sequence.
+
+beg2 :  Input iterator to initial position of second sorted sequence.
+end2 :  Input iterator to final position of second sorted sequence.
+
+Return value : 
+True if every element of 2nd container lies in 1st container.
+
+
+// C++ code to demonstrate the working of  
+// includes() implementation 1 
+  
+#include<bits/stdc++.h> 
+using namespace std; 
+  
+int main() 
+{ 
+    // initializing 1st container 
+    vector<int> arr1 = { 1, 4, 6, 3, 2 }; 
+      
+    // initializing 2nd container 
+    vector<int> arr2 = { 1, 2, 4 }; 
+      
+    // sorting initial containers 
+    sort(arr1.begin(), arr1.end()); 
+    sort(arr2.begin(), arr2.end()); 
+      
+    // using include() check if all elements  
+    // of arr2 lie in arr1  
+    if(includes(arr1.begin(), arr1.end(), arr2.begin(), arr2.end())) 
+    cout << "All elements of 2nd container are in 1st container"; 
+    else 
+    cout << "All elements of 2nd container are not in 1st container"; 
+      
+} 
+
+
+
+
+Syntax 2 : Using Comparator
+
+Template :
+template 
+  bool includes (initer1 beg1, initer1 end1,
+                        initer2 beg2, initer2 end2, Compare comp)
+Parameters :
+beg1 :  Input iterator to initial position of first sorted sequence.
+end1 :  Input iterator to final position of first sorted sequence.
+
+beg2 :  Input iterator to initial position of second sorted sequence.
+end2 :  Input iterator to final position of second sorted sequence.
+
+comp : The comparator function that returns a boolean
+true/false of the each elements compared. This function 
+accepts two arguments. This can be function pointer or 
+function object and cannot change values.
+
+Return value : 
+True if every element of 2nd container lies in 1st container.
+// C++ code to demonstrate the working of  
+// includes() implementation 2 
+  
+#include<bits/stdc++.h> 
+using namespace std; 
+  
+// comparator function 
+bool comp (int i, int j) { return i<j; } 
+  
+int main() 
+{ 
+    // initializing 1st container 
+    vector<int> arr1 = { 1, 4, 6, 3, 2 }; 
+      
+    // initializing 2nd container 
+    vector<int> arr2 = { 1, 2, 4 }; 
+      
+    // sorting initial containers 
+    sort(arr1.begin(), arr1.end()); 
+    sort(arr2.begin(), arr2.end()); 
+      
+    // using include() check if all elements  
+    // of arr2 lie in arr1  
+    // using comparator function 
+    if(includes(arr1.begin(), arr1.end(), arr2.begin(), arr2.end(), comp)) 
+    cout << "All elements of 2nd container are in 1st container"; 
+    else 
+    cout << "All elements of 2nd container are not in 1st container"; 
+      
+} 
+Output:
+
+All elements of 2nd container are in 1st container
+
+
+
+Possible application : This function can be potentially used to find if a set is subset of another or can be used to determine lottery winner , in a system in which person who has all the lottery numbers in his card wins the lottery. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

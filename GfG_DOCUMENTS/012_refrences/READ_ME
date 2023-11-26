@@ -1,0 +1,935 @@
+
+
+
+
+
+In C++ programming, object slicing occurs when an object of a subclass type is copied to an object of superclass type: the superclass copy will not have any of the member variables defined in the subclass. (These variables have, in effect, been "sliced off".) More subtly, object slicing can also occur when an object of a subclass type is copied to an object of the same type by the superclass's assignment operator, in which case some of the target object's member variables will retain their original values instead of being copied from the source object.
+"Slicing" is where you assign an object of a derived class to an instance of a base class, thereby losing part of the information - some of it is "sliced" away. For example,
+
+class A {
+   int foo;
+};
+class B : public A {
+   int bar;
+};
+
+So an object of type B has two data members, foo and bar.
+Then if you were to write this:
+B b;
+A a = b;
+Then the information in b about member bar is lost in a.
+
+487
+
+Most answers here fail to explain what the actual problem with slicing is. They only explain the benign cases of slicing, not the treacherous ones. Assume, like the other answers, that you're dealing with two classes A and B, where B derives (publicly) from A.
+In this situation, C++ lets you pass an instance of B to A's assignment operator (and also to the copy constructor). This works because an instance of B can be converted to a const A&, which is what assignment operators and copy-constructors expect their arguments to be.
+
+The benign case
+B b;
+A a = b;
+Nothing bad happens there - you asked for an instance of A which is a copy of B, and that's exactly what you get. Sure, a won't contain some of b's members, but how should it? It's an A, after all, not a B, so it hasn't even heard about these members, let alone would be able to store them.
+
+The treacherous case
+B b1;
+B b2;
+A& a_ref = b2;
+a_ref = b1;
+//b2 now contains a mixture of b1 and b2!
+You might think that b2 will be a copy of b1 afterward. But, alas, it's not! If you inspect it, you'll discover that b2 is a Frankensteinian creature, made from some chunks of b1 (the chunks that B inherits from A), and some chunks of b2 (the chunks that only B contains). Ouch!
+
+What happened? Well, C++ by default doesn't treat assignment operators as virtual. Thus, the line a_ref = b1 will call the assignment operator of A, not that of B. This is because, for non-virtual functions, the declared type (which is A&) determines which function is called, as opposed to the actual type (which would be B, since a_ref references an instance of B). Now, A's assignment operator obviously knows only about the members declared in A, so it will copy only those, leaving the members added in B unchanged.
+
+A solution:
+Assigning only to parts of an object usually makes little sense, yet C++, unfortunately, provides no built-in way to forbid this. You can, however, roll your own. The first step is making the assignment operator virtual. This will guarantee that it's always the actual type's assignment operator which is called, not the declared type's. The second step is to use dynamic_cast to verify that the assigned object has a compatible type. The third step is to do the actual assignment in a (protected!) member assign(), since B's assign() will probably want to use A's assign() to copy A's, members.
+
+********************************************************************************************************/
+class A {
+public:
+  virtual A& operator= (const A& a) {
+    assign(a);
+    return *this;
+  }
+
+protected:
+  void assign(const A& a) {
+    // copy members of A from a to this
+  }
+};
+
+class B : public A {
+public:
+  virtual B& operator= (const A& a) {
+    if (const B* b = dynamic_cast<const B*>(&a))
+      assign(*b);
+    else
+      throw bad_assignment();
+    return *this;
+  }
+
+protected:
+  void assign(const B& b) {
+    A::assign(b); // Let A's assign() copy members of A from b to this
+    // copy members of B from b to this
+  }
+};
+********************************************************************************************************/
+Note that, for pure convenience, B's operator= covariantly overrides the return type, since it knows that it's returning an instance of B.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+When do we pass arguments by reference or pointer?
+In C++, variables are passed by reference due to following reasons:
+1) To modify local variables of the caller function: A reference (or pointer) allows called function to modify a local variable of the caller function. For example, consider the following example program where fun() is able to modify local variable x of main().
+/**************************************************************************************
+void fun(int &x) { 
+    x = 20; 
+} 
+  
+int main() { 
+    int x = 10; 
+    fun(x); 
+    cout<<"New value of x is "<<x; 
+    return 0; 
+}
+/**************************************************************************************
+prog.cpp: In function 'int main()':
+prog.cpp:8:2: error: 'cout' was not declared in this scope
+  cout<<"New value of x is "<<x; 
+  ^
+Output:
+New value of x is 20
+
+2) For passing large sized arguments: If an argument is large, passing by reference (or pointer) is more efficient because only an address is really passed, not the entire object. For example, let us consider the following Employee class and a function printEmpDetails() that prints Employee details.
+
+/**************************************************************************************
+class Employee { 
+private: 
+    string name; 
+    string desig; 
+  
+    // More attributes and operations 
+}; 
+  
+void printEmpDetails(Employee emp) { 
+     cout<<emp.getName(); 
+     cout<<emp.getDesig(); 
+  
+    // Print more attributes 
+} 
+/**************************************************************************************
+The problem with above code is: every time printEmpDetails() is called, a new Employee object is constructed that involves creating a copy of all data members. So a better implementation would be to pass Employee as a reference.
+
+void printEmpDetails(const Employee &emp) { 
+     cout<<emp.getName(); 
+     cout<<emp.getDesig(); 
+  
+    // Print more attributes  
+}
+This point is valid only for struct and class variables as we don’t get any efficiency advantage for basic types like int, char.. etc.
+
+
+3) To avoid Object Slicing: If we pass an object of subclass to a function that expects an object of superclass then the passed object is sliced if it is pass by value. For example, consider the following program, it prints “This is Pet Class”.
+
+/**************************************************************************************
+#include <iostream> 
+#include<string> 
+  
+using namespace std; 
+  
+class Pet { 
+public: 
+    virtual string getDescription() const { 
+        return "This is Pet class"; 
+    } 
+}; 
+  
+class Dog : public Pet { 
+public: 
+    virtual string getDescription() const { 
+        return "This is Dog class"; 
+    } 
+}; 
+  
+void describe(Pet p) { // Slices the derived class object 
+    cout<<p.getDescription()<<endl; 
+} 
+  
+int main() { 
+    Dog d; 
+    describe(d); 
+    return 0; 
+} 
+/**************************************************************************************
+Output:
+This is Pet Class
+
+If we use pass by reference in the above program then it correctly prints “This is Dog Class”. See the following modified program.
+
+/**************************************************************************************
+#include <iostream> 
+#include<string> 
+  
+using namespace std; 
+  
+class Pet { 
+public: 
+    virtual string getDescription() const { 
+        return "This is Pet class"; 
+    } 
+}; 
+  
+class Dog : public Pet { 
+public: 
+    virtual string getDescription() const { 
+        return "This is Dog class"; 
+    } 
+}; 
+  
+void describe(const Pet &p) { // Doesn't slice the derived class object. 
+    cout<<p.getDescription()<<endl; 
+} 
+  
+int main() { 
+    Dog d; 
+    describe(d); 
+    return 0; 
+}
+/**************************************************************************************
+Output:
+This is Dog Class
+
+This point is also not valid for basic data types like int, char, .. etc.
+
+4) To achieve Run Time Polymorphism in a function
+We can make a function polymorphic by passing objects as reference (or pointer) to it. For example, in the following program, print() receives a reference to the base class object. print() calls the base class function show() if base class object is passed, and derived class function show() if derived class object is passed.
+
+/**************************************************************************************
+#include<iostream> 
+using namespace std; 
+  
+class base { 
+public: 
+    virtual void show() {  // Note the virtual keyword here 
+        cout<<"In base \n"; 
+    } 
+}; 
+  
+  
+class derived: public base { 
+public: 
+    void show() { 
+        cout<<"In derived \n"; 
+    } 
+}; 
+  
+// Since we pass b as reference, we achieve run time polymorphism here. 
+void print(base &b) { 
+    b.show(); 
+} 
+  
+int main(void) { 
+    base b; 
+    derived d; 
+    print(b); 
+    print(d); 
+    return 0; 
+}
+/**************************************************************************************
+Output:
+In base
+In derived
+As a side note, it is a recommended practice to make reference arguments const if they are being passed by reference only due to reason no. 2 or 3 mentioned above. This is recommended to avoid unexpected modifications to the objects.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Can references refer to invalid location in C++?
+
+In C++, Reference variables are safer than pointers because reference variables must be initialized and they cannot be changed to refer to something else once they are initialized. But there are exceptions where we can have invalid references.
+
+1) Reference to value at uninitialized pointer.
+********************************************************************************************************/
+int *ptr; 
+int &ref = *ptr;  // Reference to value at some random memory location 
+********************************************************************************************************/
+prog.c:2:5: error: expected identifier or '(' before '&' token
+ int &ref = *ptr; // Reference to value at some random memory location 
+     ^
+2) Reference to a local variable is returned.
+********************************************************************************************************/
+int& fun() 
+{ 
+   int a = 10; 
+   return a; 
+} 
+********************************************************************************************************/
+prog.c:1:4: error: expected identifier or '(' before '&' token
+ int& fun() 
+    ^
+Once fun() returns, the space allocated to it on stack frame will be taken back. So the reference to a local variable will not be valid.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Passing by pointer Vs Passing by Reference in C++
+In C++, we can pass parameters to a function either by pointers or by reference. In both the cases, we get the same result. So the following questions are inevitable; when is one preferred over the other? What are the reasons we use one over the other?
+
+Passing by Pointer:
+/**************************************************************************************
+// C++ program to swap two numbers using 
+// pass by pointer. 
+#include <iostream> 
+using namespace std; 
+  
+void swap(int* x, int* y) 
+{ 
+    int z = *x; 
+    *x = *y; 
+    *y = z; 
+} 
+  
+int main() 
+{ 
+    int a = 45, b = 35; 
+    cout << "Before Swap\n"; 
+    cout << "a = " << a << " b = " << b << "\n"; 
+  
+    swap(&a, &b); 
+  
+    cout << "After Swap with pass by pointer\n"; 
+    cout << "a = " << a << " b = " << b << "\n"; 
+} 
+/**************************************************************************************
+Output:
+Before Swap
+a = 45 b = 35
+After Swap with pass by pointer
+a = 35 b = 45
+
+Passing by Reference:
+/**************************************************************************************
+// C++ program to swap two numbers using 
+// pass by reference. 
+  
+#include <iostream> 
+using namespace std; 
+void swap(int& x, int& y) 
+{ 
+    int z = x; 
+    x = y; 
+    y = z; 
+} 
+  
+int main() 
+{ 
+    int a = 45, b = 35; 
+    cout << "Before Swap\n"; 
+    cout << "a = " << a << " b = " << b << "\n"; 
+  
+    swap(a, b); 
+  
+    cout << "After Swap with pass by reference\n"; 
+    cout << "a = " << a << " b = " << b << "\n"; 
+} 
+/**************************************************************************************
+Output:
+Before Swap
+a = 45 b = 35
+After Swap with pass by reference
+a = 35 b = 45
+
+Difference in Reference variable and pointer variable
+References are generally implemented using pointers. A reference is same object, just with a different name and reference must refer to an object. Since references can’t be NULL, they are safer to use.
+
+A pointer can be re-assigned while reference cannot, and must be assigned at initialization only.
+Pointer can be assigned NULL directly, whereas reference cannot.
+Pointers can iterate over an array, we can use ++ to go to the next item that a pointer is pointing to.
+A pointer is a variable that holds a memory address. A reference has the same memory address as the item it references.
+A pointer to a class/struct uses ‘->'(arrow operator) to access it’s members whereas a reference uses a ‘.'(dot operator)
+A pointer needs to be dereferenced with * to access the memory location it points to, whereas a reference can be used directly.
+
+/**************************************************************************************
+// C++ program to demonstrate differences between pointer 
+// and reference. 
+#include <iostream> 
+using namespace std; 
+  
+struct demo 
+{ 
+    int a; 
+}; 
+  
+int main() 
+{ 
+    int x = 5; 
+    int y = 6; 
+    demo d; 
+      
+    int *p; 
+    p =  &x; 
+    p = &y;                     // 1. Pointer reintialization allowed 
+    int &r = x; 
+    // &r = y;                  // 1. Compile Error 
+    r = y;                      // 1. x value becomes 6 
+      
+    p = NULL;            
+    // &r = NULL;               // 2. Compile Error 
+      
+    p++;                        // 3. Points to next memory location 
+    r++;                        // 3. x values becomes 7 
+      
+    cout << &p << " " << &x << endl;    // 4. Different address 
+    cout << &r << " " << &x << endl;    // 4. Same address 
+      
+    demo *q = &d; 
+    demo &qq = d; 
+      
+    q->a = 8; 
+    // q.a = 8;                 // 5. Compile Error  
+    qq.a = 8; 
+    // qq->a = 8;               // 5. Compile Error 
+      
+    cout << p << endl;        // 6. Prints the address 
+    cout << r << endl;        // 6. Print the value of x     
+  
+    return 0; 
+} 
+/**************************************************************************************
+Output (May be different in different runs as we print addresses in program):
+
+0x7ffd09172c20 0x7ffd09172c18
+0x7ffd09172c18 0x7ffd09172c18
+0x4
+7
+Usage in parameter passing:
+References are usually preferred over pointers whenever we don’t need “reseating”.
+Overall, Use references when you can, and pointers when you have to. But if we want to write C code that compiles with both C and a C++ compiler, you’ll have to restrict yourself to using pointers.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Pointers vs References in C++
+
+C and C++ support pointers which are different from most of the other programming languages. Other languages including C++, Java, Python, Ruby, Perl and PHP support references.
+
+On the surface, both references and pointers are very similar, both are used to have one variable provide access to another. With both providing lots of the same capabilities, it’s often unclear what is different between these different mechanisms. In this article, I will try to illustrate the differences between pointers and references.
+
+Pointers: A pointer is a variable that holds memory address of another variable. A pointer needs to be dereferenced with * operator to access the memory location it points to.
+
+References : A reference variable is an alias, that is, another name for an already existing variable. A reference, like a pointer, is also implemented by storing the address of an object.
+A reference can be thought of as a constant pointer (not to be confused with a pointer to a constant value!) with automatic indirection, i.e the compiler will apply the * operator for you.
+
+int i = 3; 
+// A pointer to variable i (or stores
+// address of i)
+int *ptr = &i; 
+// A reference (or alias) for i.
+int &ref = i; 
+
+Differences :
+
+Initialization:
+ A pointer can be initialized in this way:
+ int a = 10;        
+  int *p = &a;    
+         OR 
+     int *p;
+   p = &a;
+we can declare and initialize pointer at same step or in multiple line.
+While in references,
+int a=10;
+int &p=a;  //it is correct
+   but
+int &p;
+ p=a;    // it is incorrect as we should declare and initialize references at single step.
+NOTE: This differences may vary from compiler to compiler.Above differences is with respect to turbo IDE.
+
+Reassignment: 
+A pointer can be re-assigned. This property is useful for implementation of data structures like linked list, tree, etc. See the following examples:
+int a = 5;
+int b = 6;
+int *p;
+p =  &a;
+p = &b;
+On the other hand, a reference cannot be re-assigned, and must be assigned at initialization.
+
+int a = 5;
+int b = 6;
+int &p = a;
+int &p = b;  //At this line it will show error as "multiple declaration is not allowed".
+
+However it is valid statement,
+int &q=p;
+
+Memory Address:
+ A pointer has its own memory address and size on the stack whereas a reference shares the same memory address (with the original variable) but also takes up some space on the stack.
+NOTE However if we want the true address of reference, then it can be found out in turbo IDE by writing the following statement,
+   int &p = a;
+   cout << &(&p);
+NULL value: Pointer can be assigned NULL directly, whereas reference cannot. The constraints associated with references (no NULL, no reassignment) ensure that the underlying operations do not run into exception situation.
+Indirection: You can have pointers to pointers offering extra levels of indirection. Whereas references only offer one level of indirection.I.e,
+In Pointers,
+int a = 10;
+int *p;
+int **q;  //it is valid.
+p = &a;
+q = &p;
+
+Whereas in references,
+int &p = a;
+int &&q = p; //it is reference to reference, so it is an error.
+Arithmetic operations: Various arithmetic operations can be performed on pointers whereas there is no such thing called Reference Arithmetic.(but you can take the address of an object pointed by a reference and do pointer arithmetics on it as in &obj + 5).)
+When to use What
+
+The performances are exactly the same, as references are implemented internally as pointers. But still you can keep some points in your mind to decide when to use what :
+
+Use references
+In function parameters and return types.
+Use pointers:
+Use pointers if pointer arithmetic or passing NULL-pointer is needed. For example for arrays (Note that array access is implemented using pointer arithmetic).
+To implement data structures like linked list, tree, etc and their algorithms because to point different cell, we have to use the concept of pointers.
+For Example,
+In Pointers
+
+int arr[] = {10,20,30};
+int *p,i ;
+p = arr;
+for(i = 0; i<3 ; i++)
+{
+cout << *p << endl;
+p++;
+}
+Output:
+
+10
+20
+30
+NOTE: Here pointer will be ahead of base address
+
+Now take same code in Reference
+
+int arr[] = {10,20,30};
+int &p = arr[0];
+int i;
+for(i = 0; i<3 ; i++)
+{
+cout << p << endl;
+p++;  //here it will increment arr[0]++
+}
+Output:
+
+10
+11
+12
+        
+NOTE: Here pointer will be at base address only.
+
+Quoted in C++ FAQ Lite : Use references when you can, and pointers when you have to. References are usually preferred over pointers whenever you don’t need “reseating”. This usually means that references are most useful in a class’s public interface. References typically appear on the skin of an object, and pointers on the inside.
+
+The exception to the above is where a function’s parameter or return value needs a “sentinel” reference — a reference that does not refer to an object. This is usually best done by returning/taking a pointer, and giving the NULL pointer this special significance (references must always alias objects, not a dereferenced null pointer).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+When a variable is declared as reference, it becomes an alternative name for an existing variable. A variable can be declared as reference by putting ‘&’ in the declaration.
+/**************************************************************************************
+#include<iostream> 
+using namespace std; 
+  
+int main() 
+{ 
+  int x = 10; 
+  
+  // ref is a reference to x. 
+  int& ref = x; 
+  
+  // Value of x is now changed to 20 
+  ref = 20; 
+  cout << "x = " << x << endl ; 
+  
+  // Value of x is now changed to 30 
+  x = 30; 
+  cout << "ref = " << ref << endl ; 
+  
+  return 0; 
+} 
+/**************************************************************************************
+Output:
+ x = 20
+ref = 30
+
+
+Applications :
+
+Modify the passed parameters in a function : If a function receives a reference to a variable, it can modify the value of the variable. For example, in the following program variables are swapped using references.
+/**************************************************************************************
+#include<iostream> 
+using namespace std; 
+  
+void swap (int& first, int& second) 
+{ 
+    int temp = first; 
+    first = second; 
+    second = temp; 
+} 
+  
+int main() 
+{ 
+    int a = 2, b = 3; 
+    swap( a, b ); 
+    cout << a << " " << b; 
+    return 0; 
+} 
+/**************************************************************************************
+Output:
+ 3 2 
+
+Avoiding copy of large structures : Imagine a function that has to receive a large object. If we pass it without reference, a new copy of it is created which causes wastage of CPU time and memory. We can use references to avoid this.
+/**************************************************************************************
+struct Student { 
+   string name; 
+   string address; 
+   int rollNo; 
+} 
+  
+// If we remove & in below function, a new 
+// copy of the student object is created.  
+// We use const to avoid accidental updates 
+// in the function as the purpose of the function 
+// is to print s only. 
+void print(const Student &s) 
+{ 
+    cout << s.name << "  " << s.address << "  " << s.rollNo; 
+} 
+/**************************************************************************************
+
+In For Each Loops to modify all objects : We can use references in for each loops to modify all elements
+/**************************************************************************************
+#include <bits/stdc++.h>  
+using namespace std;  
+  
+int main()  
+{  
+    vector<int> vect{ 10, 20, 30, 40 };  
+  
+    // We can modify elements if we  
+    // use reference 
+    for (int &x : vect)  
+        x = x + 5; 
+  
+    // Printing elements 
+    for (int x : vect)  
+       cout << x << " ";  
+  
+    return 0;  
+}  
+/**************************************************************************************
+
+In For Each Loops to avoid copy of objects : We can use references in for each loops to avoid copy of individual objects when objects are large.
+/**************************************************************************************
+#include <bits/stdc++.h>  
+using namespace std;  
+  
+int main()  
+{  
+    vector<string> vect{"geeksforgeeks practice",  
+                     "geeksforgeeks write", 
+                     "geeksforgeeks ide"};  
+  
+    // We avoid copy of the whole string 
+    // object by using reference. 
+    for (const auto &x : vect)  
+       cout << x << endl;  
+  
+    return 0;  
+} 
+/**************************************************************************************
+
+
+References vs Pointers
+Both references and pointers can be used to change local variables of one function inside another function. Both of them can also be used to save copying of big objects when passed as arguments to functions or returned from functions, to get efficiency gain.
+Despite above similarities, there are following differences between references and pointers.
+
+A pointer can be declared as void but a reference can never be void
+For example
+
+int a = 10;
+void* aa = &a;. //it is valid
+void &ar = a; // it is not valid
+Thanks to Shweta Bansal for adding this point.
+
+References are less powerful than pointers
+
+1) Once a reference is created, it cannot be later made to reference another object; it cannot be reseated. This is often done with pointers.
+2) References cannot be NULL. Pointers are often made NULL to indicate that they are not pointing to any valid thing.
+3) A reference must be initialized when declared. There is no such restriction with pointers
+
+Due to the above limitations, references in C++ cannot be used for implementing data structures like Linked List, Tree, etc. In Java, references don’t have above restrictions, and can be used to implement all data structures. References being more powerful in Java, is the main reason Java doesn’t need pointers.
+
+References are safer and easier to use:
+1) Safer: Since references must be initialized, wild references like wild pointers are unlikely to exist. It is still possible to have references that don’t refer to a valid location (See questions 5 and 6 in the below exercise )
+2) Easier to use: References don’t need dereferencing operator to access the value. They can be used like normal variables. ‘&’ operator is needed only at the time of declaration. Also, members of an object reference can be accessed with dot operator (‘.’), unlike pointers where arrow operator (->) is needed to access members.
+
+Together with the above reasons, there are few places like copy constructor argument where pointer cannot be used. Reference must be used pass the argument in copy constructor. Similarly references must be used for overloading some operators like ++.
+
+
+
+Exercise:
+Predict the output of following programs. If there are compilation errors, then fix them.
+
+Question 1
+/**************************************************************************************
+#include<iostream> 
+using namespace std; 
+  
+int &fun() 
+{ 
+    static int x = 10; 
+    return x; 
+} 
+int main() 
+{ 
+    fun() = 30; 
+    cout << fun(); 
+    return 0; 
+} 
+/**************************************************************************************
+30
+
+
+Question 2
+/**************************************************************************************
+#include<iostream> 
+using namespace std; 
+  
+int fun(int &x) 
+{ 
+    return x; 
+} 
+int main() 
+{ 
+    cout << fun(10); 
+    return 0; 
+} 
+/**************************************************************************************
+prog.cpp: In function 'int main()':
+prog.cpp:10:16: error: invalid initialization of non-const reference of type 'int&' from an rvalue of type 'int'
+  cout << fun(10); 
+                ^
+prog.cpp:4:5: note:   initializing argument 1 of 'int fun(int&)'
+ int fun(int &x) 
+     ^
+
+
+Question 3
+/**************************************************************************************
+#include<iostream> 
+using namespace std; 
+  
+void swap(char * &str1, char * &str2) 
+{ 
+  char *temp = str1; 
+  str1 = str2; 
+  str2 = temp; 
+} 
+  
+int main() 
+{ 
+  char *str1 = "GEEKS"; 
+  char *str2 = "FOR GEEKS"; 
+  swap(str1, str2); 
+  cout<<"str1 is "<<str1<<endl; 
+  cout<<"str2 is "<<str2<<endl; 
+  return 0; 
+} 
+/**************************************************************************************
+prog.cpp: In function 'int main()':
+prog.cpp:13:14: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+ char *str1 = "GEEKS"; 
+              ^
+prog.cpp:14:14: warning: ISO C++ forbids converting a string constant to 'char*' [-Wwrite-strings]
+ char *str2 = "FOR GEEKS"; 
+              ^
+
+
+Question 4
+/**************************************************************************************
+#include<iostream> 
+using namespace std; 
+  
+int main() 
+{ 
+   int x = 10; 
+   int *ptr = &x; 
+   int &*ptr1 = ptr; 
+} 
+/**************************************************************************************
+prog.cpp: In function 'int main()':
+prog.cpp:8:7: error: cannot declare pointer to 'int&'
+ int &*ptr1 = *ptr; 
+       ^
+prog.cpp:8:15: error: invalid conversion from 'int' to 'int*' [-fpermissive]
+ int &*ptr1 = *ptr; 
+               ^
+
+
+Question 5
+/**************************************************************************************
+#include<iostream> 
+using namespace std; 
+  
+int main() 
+{ 
+   int *ptr = NULL; 
+   int &ref = *ptr; 
+   cout << ref; 
+} 
+/**************************************************************************************
+Segmentation Fault (SIGSEGV)
+
+
+Question 6
+
+/**************************************************************************************
+#include<iostream> 
+using namespace std; 
+  
+int &fun() 
+{ 
+    int x = 10; 
+    return x; 
+} 
+int main() 
+{ 
+    fun() = 30; 
+    cout << fun(); 
+    return 0; 
+} 
+/**************************************************************************************
+Segmentation Fault (SIGSEGV)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

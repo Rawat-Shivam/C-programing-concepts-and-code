@@ -1,0 +1,179 @@
+
+
+
+
+
+snprintf() in C library
+The snprintf() function formats and stores a series of characters and values in the array buffer. The snprintf() function with the addition of the n argument, which indicates the maximum number of characters (including at the end of null character) to be written to buffer. It is defined in <stdio.h> header file.
+
+Syntax :
+
+int snprintf(char *str, size_t size, const char *format, ...);
+
+*str : is a buffer.
+size : is the maximum number of bytes
+(characters) that will be written to the buffer.
+format : C string that contains a format
+string that follows the same specifications as format in printf
+... : the optional ( …) arguments 
+are just the string formats like (“%d”, myint) as seen in printf.
+// C program to demonstrate snprintf() 
+#include <stdio.h> 
+  
+int main() 
+{ 
+    char buffer[50]; 
+    char* s = "geeksforgeeks"; 
+  
+    // Counting the character and storing  
+    // in buffer using snprintf 
+    int j = snprintf(buffer, 6, "%s\n", s); 
+  
+    // Print the string stored in buffer and 
+    // character count 
+    printf("string:\n%s\ncharacter count = %d\n", 
+                                     buffer, j); 
+  
+    return 0; 
+} 
+Output:
+string:
+geeks
+character count = 14
+
+
+Inbuilt library functions for user Input | scanf, fscanf, sscanf, scanf_s, fscanf_s, sscanf_s
+
+
+
+
+scanf() : The C library function int scanf (const char *format, …) reads formatted input from stdin.
+Syntax:
+int scanf(const char *format, ...)
+
+Return type: Integer
+
+Parameters:
+format: string that contains the type specifier(s) 
+"..." (ellipsis): indicates that the function accepts
+a variable number of arguments
+Each argument must be a memory address where the converted result is written to. On success, the function returns the number of variables filled. In case of an input failure, before any data could be successfully read, EOF is returned.
+
+
+
+
+
+sscanf(): sscanf() is used to read formatted input from the string.
+Syntax:
+int sscanf ( const char * s, const char * format, ...);
+
+Return type: Integer
+
+Parameters:
+s: string used to retrieve data
+format: string that contains the type specifier(s)
+… : arguments contains pointers to allocate 
+storage with appropriate type. 
+
+There should be at least as many of these arguments as the 
+number of values stored by the format specifiers.
+
+
+
+
+// C program to illustrate sscanf statement 
+#include <stdio.h> 
+  
+int main () 
+{ 
+    // declaring array s 
+    char s [] = "3 red balls 2 blue balls";  
+    char str [10],str2 [10]; 
+    int i; 
+      
+    // %*s is used to skip a word 
+    sscanf (s,"%d %*s %*s %*s %s %s", &i, str, str2); 
+      
+    printf ("%d %s %s \n", i, str, str2); 
+      
+    return 0; 
+} 
+Output:
+
+3 blue balls
+
+
+
+
+
+
+fscanf(): fscanf() reads formatted data from file and stores it into variables.
+Syntax:
+int fscanf(FILE *stream, const char *format, ...)
+
+Parameters:
+Stream:  pointer to the File object that identifies the stream.
+format : is a string that contains the type specifier(s)
+On success, the function returns the number of variables filled. In the case of an input failure, before any data could be successfully read, EOF is returned.
+
+// C program to illustrate sscanf statement 
+// This program will run on system having the file file.txt 
+#include <stdio.h> 
+#include <stdlib.h> 
+  
+int main() 
+{ 
+    char s1[10], s2[10], s3[10]; 
+    int year; 
+      
+    // file pointer 
+    FILE * fp;  
+      
+    // opening/creation of file 
+    fp = fopen ("file.txt", "w+");      
+      
+    // storing string in the file 
+    fputs("Hello World its 2017", fp);  
+      
+    // sets the file position to the beginning of the file 
+    rewind(fp);  
+      
+    // taking input from file 
+    fscanf(fp, "%s %s %s %d", s1, s2, s3, &year);  
+      
+    printf("String1 |%s|\n", s1 ); 
+    printf("String2 |%s|\n", s2 ); 
+    printf("String3 |%s|\n", s3 ); 
+    printf("Integer |%d|\n", year ); 
+      
+    // close file pointer 
+    fclose(fp);      
+      
+    return(0); 
+} 
+Output:
+
+String1 |Hello|
+String2 |World|
+String3 |its|
+Integer |2017|
+
+
+
+
+
+
+
+
+
+
+
+
+
+scanf just reads whatever input is provided from the console. C does not check whether the user input will fit in the variable that you’ve designated.
+If you have an array called color[3] and you use scanf for “Red”, it will work fine but if user enters more than 3 characters scanf starts writing into memory that doesn’t belong to colour. C won’t catch this or warn you and it might or might not crash the program, depending on if something tries to access and write on that memory slot that doesn’t belong to color. This is where scanf_s comes into play. scanf_s checks that the user input will fit in the given memory space.
+
+
+
+
+

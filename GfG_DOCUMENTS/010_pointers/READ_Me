@@ -1,0 +1,180 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+What are Wild Pointers? How can we avoid?
+Uninitialized pointers are known as wild pointers because they point to some arbitrary memory location and may cause a program to crash or behave badly.
+/**************************************************************************************
+int main() 
+{ 
+  int *p;  /* wild pointer */
+   /* Some unknown memory location is being corrupted.  
+   This should never be done. */ 
+  *p = 12;  
+} 
+/**************************************************************************************
+Please note that if a pointer p points to a known variable then it’s not a wild pointer. In the below program, p is a wild pointer till this points to a.
+/**************************************************************************************
+int main() 
+{ 
+  int  *p; /* wild pointer */
+  int a = 10; 
+  p = &a;  /* p is not a wild pointer now*/
+  *p = 12; /* This is fine. Value of a is changed */ 
+} 
+/**************************************************************************************
+If we want pointer to a value (or set of values) without having a variable for the value, we should explicitly allocate memory and put the value in allocated memory.
+/**************************************************************************************
+int main() 
+{ 
+   int *p = (int *)malloc(sizeof(int)); 
+  *p = 12; /* This is fine (assuming malloc doesn't return NULL) */ 
+} 
+/**************************************************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Pointer Expressions and Pointer Arithmetic
+A limited set of arithmetic operations can be performed on pointers. A pointer may be:
+incremented ( ++ )
+decremented ( — )
+an integer may be added to a pointer ( + or += )
+an integer may be subtracted from a pointer ( – or -= )
+Pointer arithmetic is meaningless unless performed on an array.
+Note : Pointers contain addresses. Adding two addresses makes no sense, because there is no idea what it would point to. Subtracting two addresses lets you compute the offset between these two addresses.
+
+
+Array Name as Pointers
+An array name acts like a pointer constant. The value of this pointer constant is the address of the first element.
+For example, if we have an array named val then val and &val[0] can be used interchangeably.
+
+Pointers and Multidimensional Arrays
+Consider pointer notation for the two-dimensional numeric arrays. consider the following declaration
+int nums[2][3]  =  { {16, 18, 20}, {25, 26, 27} };
+In general, nums[i][j] is equivalent to *(*(nums+i)+j)
+
+
+
+
+
+
+
+
+
+
+
+Pointers are used for storing address of dynamically allocated arrays and for arrays which are passed as arguments to functions.
+arrays and pointer are two different things, see the following programs to justify this statement.
+Behavior of sizeof operator
+*************************************************************************************************************/
+// 1st program to show that array and pointers are different 
+#include <iostream> 
+using namespace std; 
+  
+int main() { 
+   int arr[] = {10, 20, 30, 40, 50, 60}; 
+   int *ptr = arr; 
+     
+   // sizof(int) * (number of element in arr[]) is printed 
+   cout << "Size of arr[] "<< sizeof(arr)<<"\n"; 
+  
+   // sizeof a pointer is printed which is same for all type  
+   // of pointers (char *, void *, etc) 
+   cout << "Size of ptr "<< sizeof(ptr); 
+   return 0; 
+} 
+*************************************************************************************************************/
+Output:
+Size of arr[] 24
+Size of ptr 8
+
+Assigning any address to an array variable is not allowed.
+*************************************************************************************************************/
+// IInd program to show that array and pointers are different 
+#include <stdio.h> 
+  
+int main() 
+{ 
+   int arr[] = {10, 20}, x = 10; 
+   int *ptr = &x; // This is fine 
+   arr = &x;  // Compiler Error 
+   return 0; 
+}
+*************************************************************************************************************/
+Output:
+ Compiler Error: incompatible types when assigning to 
+              type 'int[2]' from type 'int *' 
+
+
+
+Array members are accessed using pointer arithmetic.
+Compiler uses pointer arithmetic to access array element. For example, an expression like “arr[i]” is treated as *(arr + i) by the compiler. That is why the expressions like *(arr + i) work for array arr, and expressions like ptr[i] also work for pointer ptr.
+
+Array parameters are always passed as pointers, even when we use square brackets.
+
+ the sizeof operator
+o sizeof(array) returns the amount of memory used by all elements in array
+o sizeof(pointer) only returns the amount of memory used by the pointer variable itself
+
+2) the & operator
+o &array is an alias for &array[0] and returns the address of the first element in array
+o &pointer returns the address of pointer
+
+3) a string literal initialization of a character array
+o char array[] = “abc” sets the first four elements in array to ‘a’, ‘b’, ‘c’, and ‘\0’
+o char *pointer = “abc” sets pointer to the address of the “abc” string (which may be stored in read-only memory and thus unchangeable)
+
+4) Pointer variable can be assigned a value whereas array variable cannot be.
+
+int a[10];
+int *p; 
+p=a; /*legal*/
+a=p; /*illegal*/ 
+5) Arithmetic on pointer variable is allowed.
+
+p++; /*Legal*/
+a++; /*illegal*/ 
+
+
+
+
+
+
+
+
+
+
+
+
+

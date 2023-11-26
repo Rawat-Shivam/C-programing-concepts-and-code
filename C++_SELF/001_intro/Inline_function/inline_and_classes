@@ -1,0 +1,29 @@
+
+
+
+Inline function and classes:
+It is also possible to define the inline function inside the class. In fact, all the functions defined inside the class are implicitly inline. Thus, all the restrictions of inline functions are also applied here. If you need to explicitly declare inline function in the class then just declare the function inside the class and define it outside the class using inline keyword.
+class S 
+{ 
+public: 
+    inline int square(int s) // redundant use of inline 
+    { 
+        // this function is automatically inline 
+        // function body 
+    } 
+}; 
+The above style is considered as a bad programming style. The best programming style is to just write the prototype of function inside the class and specify it as an inline in the function definition.
+class S 
+{ 
+public: 
+    int square(int s); // declare the function 
+}; 
+  
+inline int S::square(int s) // use inline prefix 
+{ 
+  
+}
+
+
+
+

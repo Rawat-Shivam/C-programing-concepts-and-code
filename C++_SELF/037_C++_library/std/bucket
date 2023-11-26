@@ -1,0 +1,155 @@
+
+
+bucket_count and bucket_size in unordered_map in C++
+as we know, internally unordered_map is implemented using hash table so, a bucket is a slot in the internal hash Table to which elements are assigned based on the hash value of their key. Buckets are numbered from 0 to (bucket_count-1). Hence this function returns the bucket no. where element with key is located in unordered_map.
+Time Complexity: O(1).
+
+Syntax:
+
+unordered_map.bucket(k);
+k is the key corresponds to which we want to know bucket number.
+Returns: The order number of the bucket corresponding to key k.
+
+
+1. std::bucket_count: This function is used to count the total no. of buckets in the unordered_map. No parameter is required to pass into this function.
+Time Complexity: O(1).
+
+Syntax:
+unordered_map.bucket_count();
+Returns: The number of the bucket present in hash table of unordered_map.
+
+
+
+2. std::bucket_size: This function count the number of elements present in each bucket of the unordered_map.
+Time Complexity: Linear in the bucket size.
+
+Syntax:
+unordered_map.bucket_size(i);
+where 'i' is the bucket number in which we want 
+to find no. of elements. (i < bucket_count)
+Returns: The number of elements present in bucket 'i'.
+
+
+// C++ program to demonstrate the use of std::bucket 
+#include <bits/stdc++.h> 
+using namespace std; 
+  
+int main() 
+{ 
+    // Declaring umap to be of <string, double> type 
+    // key will be of string type and mapped value will 
+    // be of double type 
+    unordered_map<string, double> umap; 
+  
+    // inserting values by using [] operator 
+    umap["PI"] = 3.14; 
+    umap["root2"] = 1.414; 
+    umap["log10"] = 2.302; 
+    umap["loge"] = 1.0; 
+    umap["e"] = 2.718; 
+  
+    // Display bucket no. where key, value pair is located 
+    // using bucket(key) 
+    for (auto& x : umap) { 
+        cout << "(" << x.first << ", " << x.second << ")"; 
+        cout << " is in bucket= " 
+            << umap.bucket(x.first) << endl; 
+    } 
+    cout << endl; 
+  
+    // Count the no.of buckets in the unordered_map  
+    // using bucket_count() 
+    int n = umap.bucket_count(); 
+    cout << "umap has " << n << " buckets.\n\n"; 
+  
+    // Count no. of elements in each bucket using  
+    // bucket_size(position) 
+    for (int i = 0; i < n; i++) { 
+        cout << "Bucket " << i << " has " 
+             << umap.bucket_size(i) << " elements.\n"; 
+    } 
+  
+    return 0; 
+} 
+Output:
+
+(PI, 3.14) is in bucket= 5
+(e, 2.718) is in bucket= 1
+(root2, 1.414) is in bucket= 1
+(log10, 2.302) is in bucket= 10
+(loge, 1) is in bucket= 7
+
+umap has 11 buckets.
+
+Bucket 0 has 0 elements.
+Bucket 1 has 2 elements.
+Bucket 2 has 0 elements.
+Bucket 3 has 0 elements.
+Bucket 4 has 0 elements.
+Bucket 5 has 1 elements.
+Bucket 6 has 0 elements.
+Bucket 7 has 1 elements.
+Bucket 8 has 0 elements.
+Bucket 9 has 0 elements.
+Bucket 10 has 1 elements.
+
+
+
+We can also print all the elements present in each bucket of the unordered_map.
+
+// C++ program to print all elements present in each bucket 
+#include <bits/stdc++.h> 
+using namespace std; 
+  
+int main() 
+{ 
+    // Declaring umap to be of <string, double> type 
+    // key will be of string type and mapped value  
+    // will be of double type 
+    unordered_map<string, double> umap; 
+  
+    // inserting values by using [] operator 
+    umap["PI"] = 3.14; 
+    umap["root2"] = 1.414; 
+    umap["log10"] = 2.302; 
+    umap["loge"] = 1.0; 
+    umap["e"] = 2.718; 
+  
+    unsigned n = umap.bucket_count(); 
+  
+    // Prints elements present in each bucket 
+    for (unsigned i = 0; i < n; i++) { 
+        cout << "Bucket " << i << " contains: "; 
+        for (auto it = umap.begin(i); it != umap.end(i); it++) 
+            cout << "(" << it->first << ", " 
+                 << it->second << ") "; 
+        cout << "\n"; 
+    } 
+    return 0; 
+} 
+Output:
+
+Bucket 0 contains: 
+Bucket 1 contains: (e, 2.718) (root2, 1.414) 
+Bucket 2 contains: 
+Bucket 3 contains: 
+Bucket 4 contains: 
+Bucket 5 contains: (PI, 3.14) 
+Bucket 6 contains: 
+Bucket 7 contains: (loge, 1) 
+Bucket 8 contains: 
+Bucket 9 contains: 
+Bucket 10 contains: (log10, 2.302) 
+
+Use of bucket in std::unordered_map: There is a number of algorithms which require the objects to be hashed into some number of buckets, and then each bucket is processed. Let say, you want to find duplicates in a collection. You hash all items in the collection, then in each bucket you compare items pairwise. A bit less trivial example is Apriori algorithm for finding frequent itemsets.
+
+
+
+
+
+
+
+
+
+
+

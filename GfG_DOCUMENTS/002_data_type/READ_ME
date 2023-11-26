@@ -1,0 +1,172 @@
+
+					/****** data_types ************/
+
+Data type modifiers available in C++ are:
+Signed(int , char , long(-prefix))
+Unsigned(int , char , short(-prefix))
+Short(int )
+Long(int , double)
+
+
+
+Why is scanf faster than cin?
+On a high level both of them are wrappers over theread() system call, just syntactic sugar. The only visible difference is that scanf() has to explicitly declare the input type, whereas cin has the redirection operation overloaded using templates. It turns out that iostream makes use of stdio‘s buffering system. So, cin wastes time synchronizing itself with the underlying C-library’s stdio buffer, so that calls to bothscanf()and cin can be interleaved.
+The good thing is that libstdc++ provides an option to turn off synchronization of all the iostream standard streams with their corresponding standard C streams using:
+
+std::ios::sync_with_stdio(false);
+and cin becomes faster than scanf() as it should have been.
+/*************************************************************************
+#include<iostream> 
+using namespace std; 
+  
+int main() 
+{ 
+    char buffer[256]; 
+    ios_base::sync_with_stdio(false); 
+  
+    while (cin >> buffer) 
+    { 
+  
+    } 
+    return 0; 
+} 
+************************************************************************************/
+Like with all things, there is a caveat here. With synchronization turned off, using cin and scanf() together will result in an undefined mess.
+With synchronization turned off, the above results indicate that cin is 8-10% faster than scanf(). This is probably because scanf() interprets the format arguments at runtime and makes use of variable number of arguments, whereas cin does this at compile time.
+
+it is often recommended to use scanf/printf instead of cin/cout for a fast input and output. However, you can still use cin/cout and achieve the same speed as scanf/printf by including the following two lines in your main() function:
+
+ios_base::sync_with_stdio(false);
+
+It toggles on or off the synchronization of all the C++ standard streams with their corresponding standard C streams if it is called before the program performs its first input or output operation. Adding ios_base::sync_with_stdio (false); (which is true by default) before any I/O operation avoids this synchronization. It is a static member of function of std::ios_base.
+
+cin.tie(NULL);
+
+tie() is a method which simply guarantees the flushing of std::cout before std::cin accepts an input. This is useful for interactive console programs which require the console to be updated constantly but also slows down the program for large I/O. The NULL part just returns a NULL pointer.
+
+Moreover, you can include the standard template library (STL) with a single include:
+
+#include <bits/stdc++.h>
+
+So your template for competitive programming could look like this:
+/***********************************************************************************
+#include <bits/stdc++.h>
+using namespace std;
+
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    return 0;
+}
+**************************************************************************************/ 
+It is recommended to use cout << “\n”; instead of cout << endl;. endl is slower because it forces a flushing stream, which is usually unnecessary 
+
+cout << endl  : Inserts a new line and flushes the stream
+cout << "\n"  : Only inserts a new line.
+Therefore,
+cout << endl;( can be said equivalent to) ==cout << ‘\n’ << flush;
+So cout << “\n” seems performance wise better than cout << endl; unless flushing of stream is required.
+
+Some other differences between endl and \n are:
+endl is manipulator while \n is character.
+endl doesn’t occupy any memory whereas \n is character so It occupy 1 byte memory.
+We cannot write endl in between double quotation while we can write \n in between double quotation like
+cout<<"\n"; it is right but cout<<"endl"; is wrong.
+We can use \n both in C and C++ but, endl is only supported by C++ and not the C language.
+
+
+
+
+
+
+getchar_unlocked() is similar to getchar() with the exception that it is not thread safe. Below is an example code.
+
+/************************************************************************************
+// A simple C program to demonstrate 
+// working of getchar_unlocked() 
+#include <stdio.h> 
+int main() 
+{ 
+    // Syntax is same as getchar() 
+    char c = getchar_unlocked(); 
+  
+    printf("Entered character is %c", c); 
+  
+    return 0; 
+}
+**********************************************************************************************/
+Input: g
+Output: Entered character is g 
+
+Following are some important points:
+
+Since it is not thread safe, all overheads of mutual exclusion are avoided and it is faster than getchar().
+
+Can be especially useful for competitive programming problems with “Warning: Large I/O data, be careful with certain languages (though most should be OK if the algorithm is well designed)”.
+
+There is no issue with using getchar_unlocked() even in multithreaded environment as long as the thread using it is the only thread accessing file object
+
+One more difference with getchar() is, it is not a C standard library function, but a POSIX function. It may not work on Windows based compilers.
+
+It is a known fact than scanf() is faster than cin and getchar() is faster than scanf() in general. getchar_unlocked() is faster than getchar(), hence fastest of all.
+
+Similarly, there are getc_unlocked() putc_unlocked(), and putchar_unlocked() which are non-thread-safe versions of getc(), putc() and putchar() respectively.
+
+/*******************************************************************************************
+// A simple C program to demonstrate 
+// working of putchar_unlocked() 
+#include <stdio.h> 
+int main() 
+{ 
+    // Syntax is same as getchar() 
+    char c = getchar_unlocked(); 
+  
+    putchar_unlocked(c); 
+  
+    return 0; 
+}
+***********************************************************************************/
+Input: g
+Output: g
+
+
+
+
+
+Wide Character: 
+
+Wide character data type is also a character data type but this data type has size greater than the normal 8-bit datatype. Represented by wchar_t. 
+It is generally 2 or 4 bytes long.Wide char is similar to char data type, except that wide char take up twice the space and can take on much larger values as a result.
+char can take 256 values which corresponds to entries in the ASCII table. 
+On the other hand, wide char can take on 65536 values which corresponds to UNICODE values which is a recent international standard which allows for the encoding of characters for virtually all languages and commonly used symbols.
+just like the type for character constants is char, the type for wide character is wchar_t.
+Most of the functions for wide character array strings are defined in the header file cwchar.
+
+wcslen() : syntax: size_t wcslen (const wchar_t* wcs);
+It returns the length of the wide string. This is the wide character equivalent of strlen.
+
+wcscpy() : syntax: wchar_t *wcscpy(wchar_t *strDestination, const wchar_t *strSource);
+wcscpy() stands for Wide-Character String Copy. It copies a wide-character string pointed by strSource into the wide character array pointed by strDestination. This is the wide character equivalent of strcpy.
+wcscat() : syntax: wchar_t *wcscat(wchar_t *strDestination, const wchar_t *strSource);
+wcscat() stands for Wide-Character String Concatenation. Appends a copy of the strSource wide string to the strDestination wide string. This is the wide character equivalent of strcat.
+
+wcscmp() : syntax: int wcscmp(const wchar_t* wcs1, const wchar_t* wcs2);
+wcscmp() stands for Wide-Character String Comparison. It returns 0 if wcs1 and wcs2 are equal, returns a value greater than zero if the first wide character that does not match has a greater value in wcs1 than in wcs2. And returns a value less than zero if the first wide character that does not match has a lesser value in wcs1 than in wcs2. This is the wide character equivalent of strcmp.
+
+wcstok() : syntax: wchar_t* wcstok( wchar_t* str, const wchar_t* delim, wchar_t ** ptr);
+wcstok() stands for Wide-Character String Tokenize. Finds the next token in a null-terminated wide string pointed to by str. The separator characters are identified by null-terminated wide string pointed to by delim.
+str – pointer to the null-terminated wide string to tokenize.
+delim – pointer to the null-terminated wide string identifying delimiters.
+ptr – pointer to an object of type wchar_t*, which is used by wcstok to store its internal state.
+This is the wide character equivalent of strtok().
+
+wcsncpy() : syntax: wchar_t* wcsncpy(wchar_t* destination, const wchar_t* source, size_t n);
+Copies the first n wide-characters of source to destination. If the end of the source wide string is found before n characters have been copied, destination is padded with additional null wide characters until a total of n characters.This is the wide character equivalent of strncpy().
+
+wcsstr() : syntax: const wchar_t* wcsstr (const wchar_t* wcs1, const wchar_t* wcs2);
+Returns a pointer to the first occurrence of wcs2 in wcs1. It returns a null pointer if wcs2 is not part of wcs1. Here, wcs1 is the wide character string to be scanned and wcs2 contains the sequence to match. This is the wide character equivalent of strstr().
+
+
+
+

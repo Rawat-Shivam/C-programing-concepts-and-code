@@ -1,0 +1,61 @@
+				
+			
+				/******	000 _ how MAIN() is called *********/
+
+
+The executable file created after compiling a C source code is a Executable and Linkable Format (ELF) file.
+Every ELF file have a ELF header where there is a e_entry field which contains the program memory address from which the execution of executable will start. This memory address point to the _start() function.
+
+After loading the program, loader looks for the e_entry field from the ELF file header. Executable and Linkable Format (ELF) is a common standard file format used in UNIX system for executable files, object code, shared libraries, and core dumps.
+
+The _start() function prepare the input arguments for another function _libc_start_main() which will be called next. This is prototype of _libc_start_main() function. Here we can see the arguments which were prepared by _start() function::
+int __libc_start_main(
+			int (*main) (int, char * *, char * *), /* address of main function*/
+			int argc, /* number of command line args*/
+			char ** ubp_av, /* command line arg array*/
+			void (*init) (void), /* address of init function*/
+			void (*fini) (void), /* address of fini function*/
+			void (*rtld_fini) (void), /* address of dynamic linker fini function */
+			void (* stack_end) /* end of the stack address*/
+		     );
+
+
+The role of _libs_start_main() function is following –
+Preparing environment variables for program execution.
+Calls _init() function which performs initialization before the main() function start.
+Register _fini() and _rtld_fini() functions to perform cleanup after program terminates.
+After all the prerequisite actions has been completed, _libc_start_main() calls the main() function. 
+
+
+As _start() function by default calls main(), we have to change it if we want to execute our custom startup code. We can override the _start() function to make it call our custom startup code not main().
+
+Now we have to force compiler to not use it’s own implementation of _start().In GCC we can do this using -nostartfiles
+
+ Let’s have an example, save it as nomain.c –
+/*********************************************************
+#include<stdio.h> 
+#include<stdlib.h> 
+void _start() 
+{ 
+    int x = my_fun(); //calling custom main function 
+    exit(x); 
+} 
+  
+int my_fun() // our custom main function 
+{ 
+    printf("Hello world!\n"); 
+    return 0; 
+} 
+**********************************************************/
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+Now we have to force compiler to not use it’s own implementation of _start().In GCC we can do this using -nostartfiles
+gcc -nostartfiles -o nomain nomain.c
+
+Execute the executable nomain
+./nomain
+
+Output:
+Hello world!
+
+////////////////////////////////////////////////////////////////////////////////////////////////////

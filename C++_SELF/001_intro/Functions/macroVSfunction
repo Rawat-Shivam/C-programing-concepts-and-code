@@ -1,0 +1,27 @@
+
+
+Macros are typically faster than functions as they don’t involve actual function call overhead.
+
+Macros are no longer recommended as they cause following issues. There is a better way in modern compilers that is inline functions and const variable. Below are disadvantages of macros:
+
+a) There is no type checking
+
+b) Difficult to debug as they cause simple replacement.
+
+c) Macro don’t have namespace, so a macro in one section of code can affect other section.
+
+d) Macros can cause side effects as shown in above CUBE() example.
+
+
+gcc –E file_name.c
+This will give you the executable code, This shows that the macros are preprocessed while functions are not.
+
+
+
+
+
+
+
+
+
+

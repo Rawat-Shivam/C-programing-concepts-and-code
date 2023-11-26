@@ -1,0 +1,58 @@
+
+
+Why do we need functions?
+Functions help us in reducing code redundancy.
+This also helps in maintenance as we have to change at one place if we make future changes to the functionality.
+Functions make code modular. Consider a big file having many lines of codes. It becomes really simple to read and use the code if the code is divided into functions.
+Functions provide abstraction. For example, we can use library functions without worrying about their internal working.
+
+
+Function Declaration
+A function declaration tells the compiler about the number of parameters function takes, data-types of parameters and return type of function
+
+Putting parameter names in function declaration is optional in the function declaration, but it is necessary to put them in the definition.
+
+C also allows to declare and define functions separately, this is especially needed in case of library functions. . The library functions are declared in header files and defined in library files.
+
+Pass by Value: In this parameter passing method, values of actual parameters are copied to function’s formal parameters and the two types of parameters are stored in different memory locations. So any changes made inside functions are not reflected in actual parameters of caller
+
+Pass by Reference Both actual and formal parameters refer to same locations, so any changes made inside the function are actually reflected in actual parameters of caller.
+
+in C, we can use pointers to get the effect of pass by reference.
+
+Moreover, if the return type of the function is void, we still can use return statement in the body of function definition by not specifying any constant, variable, etc. with it, by only mentioning the ‘return;’ statement which would symbolise the termination of the function as shown below:
+
+void function name(int a) 
+{ 
+.......  //Function Body 
+return;  //Function execution would get terminated 
+}              
+
+3) In C, functions can return any type except arrays and functions. We can get around this limitation by returning pointer to array or pointer to function.
+
+
+
+----------------
+ Empty parameter list in C mean that the parameter list is not specified and function can be called with any parameters. In C, it is not a good idea to declare a function like fun(). To declare a function that can only be called without any parameter, we should use “void fun(void)”.
+
+in C++, empty list means function can only be called without any parameter. In C++, both void fun() and void fun(void) are same.
+
+---------------
+
+
+
+
+
+If in a C program, a function is called before its declaration then the C compiler automatically assumes the declaration of that function in the following way:
+int function name();
+And in that case if the return type of that function is different than INT ,compiler would show an error.
+
+
+
+
+
+
+
+
+
+

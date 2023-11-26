@@ -1,0 +1,74 @@
+
+
+stable_sort() in C++ STL
+Like std::sort(), stable_sort also sorts an array. The syntax is also same.
+
+So by default, sort() sorts an array in ascending order.
+
+
+How to sort in descending order?
+Like sort(), stable_sort() takes a third parameter that is used to specify the order in which elements are to be sorted. We can pass “greater()” function to sort in decreasing order. This function does comparison in a way that puts greater element before.
+
+    stable_sort(arr, arr + n, greater<int>()); 
+
+
+
+When to prefer stable_sort over sort()?
+
+Sometime we want to make sure that order of equal elements is same in sorted array as it was in original array. This can be useful if these values have associated other fields. For example, consider sorting students by marks, if two students have same marks, we may want to keep them in same order as they appear input. Please refer stability in sorting algorithms for details.
+
+
+
+// A C++ program to demonstrate STL stable_sort()  
+// to sort intervals according to start time. 
+// Given intervals are sorted according to 
+// ending time 
+#include <bits/stdc++.h> 
+using namespace std; 
+  
+// An interval has start time and end time 
+struct Interval { 
+    int start, end; 
+}; 
+  
+// Compares two intervals according to staring  
+// times. 
+bool compareInterval(Interval i1, Interval i2) 
+{ 
+    return (i1.start < i2.start); 
+} 
+  
+int main() 
+{ 
+    // Given intervals are sorted according to end time 
+    Interval arr[] = { {1, 3}, {2, 4}, {1, 7}, {2, 19} }; 
+    int n = sizeof(arr) / sizeof(arr[0]); 
+  
+    // sort the intervals in increasing order of 
+    // start time such that the start time intervals 
+    // appear in same order as in input. 
+    stable_sort(arr, arr + n, compareInterval); 
+  
+    cout << "Intervals sorted by start time : \n"; 
+    for (int i = 0; i < n; i++) 
+        cout << "[" << arr[i].start << ", " << arr[i].end 
+             << "] "; 
+  
+    return 0; 
+} 
+Output:
+
+Intervals sorted by start time : 
+[1, 3] [1, 7] [2, 4] [2, 19] 
+Implementation
+sort() function usually uses Introsort. Therefore, sort() may preserve the physical order of semantically equivalent values but can’t be guaranteed.
+stable_sort() function usually uses mergesort. Therefore, stable_sort() preserve the physical order of semantically equivalent values and its guaranteed.
+
+
+
+
+
+
+
+
+

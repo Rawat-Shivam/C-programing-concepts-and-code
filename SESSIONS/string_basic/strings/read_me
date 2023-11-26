@@ -1,0 +1,26 @@
+ 
+
+
+1)
+taking string in the char arry throught cin>> will take upto the first space
+but it may take more than the size of array and may lead to segmentation fault
+
+2)
+this overflow can be avoided by using setw() 
+cin>>setw(MAX)>>str;
+
+3)
+if u declare a const size string and u are trying to assign it more than its capacity ...therefore errrooorrrr
+
+4)
+cin.get(str,max);
+this will take string less than one of the size of the  string including spaces
+
+5)
+cin.get(str,MAX,'$');
+it will atke input one less than size including spaces but till the '$' symbol(delimiter)
+nd if delimiter nor encoutered ..then till size-1
+
+6)
+can copy uisng for(;strlen(s);) loop or by using strcpy(d,s);
+

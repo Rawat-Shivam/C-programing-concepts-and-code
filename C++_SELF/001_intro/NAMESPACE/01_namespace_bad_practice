@@ -1,0 +1,68 @@
+
+
+
+
+Namespaces were introduced into C++ to resolve identifier name conflicts. This ensured that two objects can have the same name and yet be treated differently if they belonged to different namespaces
+
+using namespace std;
+Although the statement saves us from 
+typing std:: whenever we wish to 
+access a class or type defined in the std namespace,
+
+we wish to use another version of cout that is custom implemented in some library called “foo” (for example)
+
+#include <foo.h> 
+#include <iostream> 
+using namespace std; 
+cout << " Something to display"; 
+
+Notice how there is an ambiguity, to which library does cout point to? 
+
+compiler may detect this and not compile the program. In the worst case, the program may still compile but call the wrong function, since we never specified to which namespace the identifier belonged.
+even if the program compiles there is no way of knowing which definition is being used where
+
+Namespaces were introduced into C++ to resolve identifier name conflicts. This ensured that two objects can have the same name and yet be treated differently if they belonged to different namespaces
+
+The solution to the problem is to explicitly specify to which namespace our identifier belongs to using the scope operator (::)
+
+#include <foo> 
+#include <iostream> 
+std::cout << "Something to display"; 
+foo::cout < "Something to display"; 
+
+
+Consider for example the code for getting the current time in the program
+#include <chrono> 
+#include <iostream> 
+auto start = std::chrono::high_performance_clock::now() 
+auto stop = std::chrono::high_peformance_clock::now(); 
+auto duration = std::duration_cast<std::chrono::milliseconds>(stop - start);
+
+
+
+Consider using typedefs
+
+#include <foo> 
+#include <iostream> 
+typedef std::cout cout_std; 
+typedef foo::cout cout_foo; 
+cout_std << "Something to write"; 
+cout_foo << "Something to write"; 
+
+Instead of importing entire namespaces, import a truncated namespace
+In example(now()) above we could have imported only the chrono namespace under std.
+#include <chrono> 
+#include <iostream> 
+// Import only the chrono namespace under std 
+using namespace std::chrono; 
+auto start = high_performance_clock::now(); 
+auto stop = high_performance_clock::now(); 
+auto duration duration_cast<milliseconds>(stop - start); 
+
+
+We can also use the statement for importing a single identifier.
+To import only std::cout we could use :
+using namespace std::cout;
+If you still import entire namespaces, try to do so inside functions or limited scope and not in global scope.
+Use the “using namespace std” statement inside function definitions or class, struct definitions. In doing so the namespace definitions get imported into a local scope, and we at least know where possible errors may originate if they do arise.
+

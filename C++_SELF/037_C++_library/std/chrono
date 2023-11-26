@@ -1,0 +1,22 @@
+
+
+Chrono in C++
+Chrono library is used to deal with date and time. This library was designed to deal with the fact that timers and clocks might be different on different systems and thus to improve over time in terms of precision. The unique thing about chrono is that it provides a precision-neutral concept by separating duration and point of time (“timepoint”) from specific clocks.
+
+
+https://www.geeksforgeeks.org/chrono-in-c/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

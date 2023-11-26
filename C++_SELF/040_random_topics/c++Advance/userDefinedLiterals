@@ -1,0 +1,144 @@
+
+
+
+User Defined Literals in C++
+User Defined Literals (UDL) are added in C++ from C++11. Although, C++ provides literals for a variety of built-in types but these are limited.
+
+Examples of literals for built-in types :
+
+// Examples of classical literals for built-in types.
+42    // int
+2.4    // double
+3.2F    // float
+'w'    // char
+32ULL    // Unsigned long long
+0xD0    // Hexadecimal unsigned
+"cd"    // C-style string(const char[3]")
+
+
+Why do we use UDLs?
+Let us consider below example to understand need of UDLs.
+
+
+long double Weight = 2.3; //  pounds? kilograms? grams?
+
+// With UDL, we attach units to the values which has
+// following advantages
+// 1) The code becomes readable.
+// 2) Conversion computations are done at compile time. 
+weight = 2.3kg;
+ratio = 2.3kg/1.2lb;
+To compute the above ratio it is necessary to convert them to same units. UDLs help us to overcome unit translation cost. We can define user-defined literals for user-defined types and new form of literals for built-in types. They help to make constants in code more readable. The value of UDLs is substituted with the actual value defined in the code by the compiler at compile time. UDL’s don’t save much of coding time but more and more calculations can be shifted to compile-time for faster execution.
+
+Examples of User Defined Literals:
+
+"hello"s            // string
+4.3i                // imaginary
+101000111101001b    // binary
+53h                // hours
+234093270497230409328432840923849 // extended-precision
+UDLs are treated as a call to a literal operator. Only suffix form is supported. The name of the literal operator is operator “” followed by the suffix.
+
+
+
+Example 1:
+
+// C++ code to demonstrate working of user defined 
+// literals (UDLs) 
+#include<iostream> 
+#include<iomanip> 
+using namespace std; 
+  
+// user defined literals 
+  
+// KiloGram 
+long double operator"" _kg( long double x ) 
+{ 
+    return x*1000; 
+} 
+  
+// Gram 
+long double operator"" _g( long double x ) 
+{ 
+    return x; 
+} 
+  
+// MiliGram 
+long double operator"" _mg( long double x ) 
+{ 
+    return x / 1000; 
+} 
+  
+// Driver code 
+int main() 
+{ 
+    long double weight = 3.6_kg; 
+    cout << weight << endl; 
+    cout << setprecision(8) << ( weight + 2.3_mg ) << endl; 
+    cout << ( 32.3_kg / 2.0_g ) << endl; 
+    cout << ( 32.3_mg *2.0_g ) << endl; 
+    return 0; 
+} 
+Output:
+3600
+3600.0023
+16150
+0.0646
+
+Example 2:
+
+#include <iostream> 
+#include <complex> 
+using namespace std; 
+  
+// imaginary literal 
+constexpr complex <double> operator"" _i( long double d ) 
+{ 
+    return complex <double> { 0.0 , static_cast <double> ( d ) }; 
+} 
+  
+int main() 
+{ 
+    complex <double> z = 3.0 + 4.0_i; 
+    complex <double> y = 2.3 + 5.0_i; 
+    cout << "z + y = " << z+y << endl; 
+    cout << "z * y = " << z*y << endl; 
+    cout << "abs(z) = " << abs(z) << endl; 
+    return 0; 
+} 
+Output:
+z + y = (5.3,9)
+z * y = (-13.1,24.2)
+abs(z) = 5
+
+
+Here, constexpr is used to enable compile time evaluation.
+
+Restriction:
+UDL can only work with the following parameters:
+
+char const*
+unsigned long long
+long double
+char const*, std::size_t
+wchar_t const*, std::size_t
+char16_t const*, std::size_t
+char32_t const*, std::size_t
+But return value can be of any types.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

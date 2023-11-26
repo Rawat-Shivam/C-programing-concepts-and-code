@@ -1,0 +1,23 @@
+
+endl vs \n in C++
+Although they both seem to do the same thing, there is a subtle difference between them.
+
+cout << endl  : Inserts a new line and flushes the stream
+
+cout << "\n"  : Only inserts a new line.
+
+---------------------------
+when we write 
+cout << std::endl 
+
+We are actually doing something like this
+cout << '\n' << std::flush; 
+
+Flushing of buffers is an Operating System task. Each time the buffer is flushed, a request has to be made to the OS and these requests are comparatively expensive. Furthermore, we don’t really need to flush the buffer every time we write something to the stream, since the buffers get flushed automatically when they get full. 
+
+In the rare cases we do need to perform flushing, we can explicitly specify the operation using either cout.flush() or by inserting std::flush into the stream.
+
+Writing ‘\n’ characters directly to the stream is more efficient since it doesn’t force a flush like std::endl.
+
+
+

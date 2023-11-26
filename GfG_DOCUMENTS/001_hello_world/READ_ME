@@ -1,0 +1,104 @@
+
+					/****** hello world ************/
+
+
+#include: In C++,  all lines that start with pound (#) sign are called directives and are processed by preprocessor
+
+
+#include<iostream>  It tells the compiler to include the standard iostream file which contains declarations of all the standard input/output library functions.
+
+
+using namespace std: This is used to import the entirety of the std namespace into the current namespace of the program. The statement using namespace std is generally considered a bad practice. When we import a namespace we are essentially pulling all type definitions into the current scope. The std namespace is huge. The alternative to this statement is to specify the namespace to which the identifier belongs using the scope operator(::) each time we declare a type.
+
+The std::cout is used to identify the standard character output device which is usually the desktop screen.
+In C++ input and output is performed in the form of a sequence of bytes or more commonly known as streams.
+
+Input Stream: If the direction of flow of bytes is from the device(for example, Keyboard) to the main memory then this process is called input.
+Output Stream: If the direction of flow of bytes is opposite, i.e. from main memory to device( display screen ) then this process is called output.
+
+iostream: iostream stands for standard input-output stream. This header file contains definitions to objects like cin, cout, cerr etc.
+iomanip: iomanip stands for input output manipulators. The methods declared in this files are used for manipulating streams. This file contains definitions of setw, setprecision etc.
+fstream: This header file mainly describes the file stream. This header file is used to handle the data being read from a file as input or data being written into the file as output.
+
+The C++ cout statement is the instance of the ostream class. It is used to produce output on the standard output device which is usually the display screen. The data needed to be displayed on the screen is inserted in the standard output stream (cout) using the insertion operator(<<).
+
+C++ cin statement is the instance of the class istream and is used to read input from the standard input device which is usually a keyboard.
+The extraction operator(>>) is used along with the object cin for reading inputs. The extraction operator extracts the data from the object cin which is entered using the keboard.
+
+Un-buffered standard error stream (cerr): The C++ cerr is the standard error stream which is used to output the errors. This is also an instance of the ostream class. As cerr in C++ is un-buffered so it is used when one needs to display the error message immediately. It does not have any buffer to store the error message and display later.
+
+buffered standard error stream (clog): This is also an instance of iostream class and used to display errors but unlike cerr the error is first inserted into a buffer and is stored in the buffer until it is not fully filled. The error message will be displayed on the screen too.
+
+The statement using namespace std is generally considered bad practice. The alternative to this statement is to specify the namespace to which the identifier belongs using the scope operator(::) each time we declare a type.
+
+Let us say we wish to use the cout from the std namespace. So we write
+/***********************************************************************************
+#include <iostream> 
+using namespace std; 
+  
+cout << " Something to Display"; 
+********************************************************************************/
+
+Now at a later stage of development, we wish to use another version of cout that is custom implemented in some library called “foo” (for example)
+/*********************************************************************************
+#include <foo.h> 
+#include <iostream> 
+using namespace std; 
+  
+cout << " Something to display"; 
+*****************************************************************************/
+
+Notice how there is an ambiguity, to which library does cout point to? The compiler may detect this and not compile the program. In the worst case, the program may still compile but call the wrong function, since we never specified to which namespace the identifier belonged.
+
+Namespaces were introduced into C++ to resolve identifier name conflicts. This ensured that two objects can have the same name and yet be treated differently if they belonged to different namespaces
+When we import a namespace we are essentially pulling all type definitions into the current scope. The std namespace is huge. It has hundreds of predefined identifiers.
+
+Consider using typedefs:
+typedefs save us from writing long type definitions. In our example 1, we could solve the problem using two typedefs one for std library and another for foo
+/***********************************************************************************
+#include <foo> 
+#include <iostream> 
+  
+typedef std::cout cout_std; 
+typedef foo::cout cout_foo; 
+  
+cout_std << "Something to write"; 
+cout_foo << "Something to write"; 
+*************************************************************************************/
+
+
+If you still import entire namespaces, try to do so inside functions or limited scope and not in global scope.
+Use the “using namespace std” statement inside function definitions or class, struct definitions. In doing so the namespace definitions get imported into a local scope, and we at least know where possible errors may originate if they do arise.
+/*******************************************************************************
+#include <isotream> 
+  
+// Avoid this 
+using namespace std; 
+  
+void foo() 
+{ 
+    // Inside function 
+    // Use the import statement inside limited scope 
+    using namespace std; 
+  
+    // Proceed with function 
+} 
+*****************************************************************************************/
+
+
+Instead of importing entire namespaces, import a truncated namespace.
+ we could have imported only the chrono namespace under std.
+We can also use the statement for importing a single identifier. To import only std::cout we could use
+/************************************************************************************
+#include <chrono> 
+#include <iostream> 
+  
+// Import only the chrono namespace under std 
+using namespace std::chrono;
+// or use 
+using namespace std::cout;
+//depending upon the need
+*************************************************************************************/ 
+ 
+
+ it is never a good idea to use “void main()” or just “main()”

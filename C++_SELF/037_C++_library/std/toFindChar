@@ -1,0 +1,73 @@
+
+
+std::memchr in C++
+C++ offers various standard template libraries to be used. One of them is memchr() function which will search for the first occurrence of a character in a specified number of characters.
+Template
+
+const void* memchr( const void* ptr, int ch, std::size_t count );
+Parameters : 
+ptr : Pointer to the object to be searched for.
+ch : Character to search for.
+count : Number of character to be searched for.
+
+Return value:
+If the character is found, the memchr() function returns a pointer to 
+the location of the character, otherwise returns null pointer.
+// CPP program to illustrate memchr() 
+#include <cstring> 
+#include <iostream> 
+  
+using namespace std; 
+  
+int main() 
+{ 
+    char sr[] = "This is a sample"; 
+    char ch = 's'; 
+    int count = 13; 
+  
+    if (memchr(sr, ch, count)) 
+        cout << ch << " is present in first "
+             << count << " characters of \"" << sr << "\""; 
+    else
+        cout << ch << " is not present in first "
+             << count << " characters of \"" << sr << "\""; 
+  
+    return 0; 
+} 
+Output:
+s is present in first 13 characters of "This is a sample"
+
+
+
+// CPP program to illustrate memchr() 
+#include <iostream> 
+#include <cstring> 
+  
+int main() 
+{ 
+    char arr[] = { 'b', 'a', 'd', 'e', 'f', 'A', 'g' }; 
+    char* pc = (char*)std::memchr(arr, 'g', sizeof arr); 
+    if (pc != NULL) 
+        std::cout << "search character found\n"; 
+    else
+        std::cout << "search character not found\n"; 
+} 
+Output:
+search character found
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

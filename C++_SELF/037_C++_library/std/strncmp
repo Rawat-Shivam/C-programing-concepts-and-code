@@ -1,0 +1,112 @@
+
+
+
+std::strncmp() in C++
+std::strncmp() function lexicographically compares not more than count characters from the two null-terminated strings and returns an integer based on the outcome.
+
+This function takes two strings and a number num as arguments and compare at most first num bytes of both the strings.
+num should be at most equal to the length of the longest string. If num is defined greater than the string length than comparison is done till the null-character(‘\0’) of either string.
+This function compares the two strings lexicographically. It starts comparison from the first character of each string. If they are equal to each other, it continues and compare the next character of each string and so on.
+This process of comparison stops until a terminating null-character of either string is reached or num characters of both the strings matches.
+Syntax :
+
+int strncmp(const char *str1, const char *str2, size_t count);
+
+Parameters:
+str1 and str2: C string to be compared.
+count: Maximum number of characters to compare.
+ size_t is an unsigned integral type.
+
+Return Value: 
+Value                               Meaning
+Less than zero                      str1 is less than str2.
+Zero                                str1 is equal to str2.
+Greater than zero                   str1 is greater than str2.
+If there are less than count characters in either string, the comparison ends when the first null is encountered.
+
+
+What does strcmp() return?
+
+strncmp() function return three different types of integer values on the basis of comparison:
+
+1. Greater than zero ( >0 ): A positive value is returned, if a character of str1 and str2 doesn’t match before the num characters and the ASCII value of str1 character is greater than ASCII value of str2 character. As a result, we can say that str1 is lexicographically greater than str2.
+
+
+2. Less than zero ( <0 ): A negative value is returned, if a character of str1 and str2 doesn’t match before the num characters and the ASCII value of str1 character is lesser than ASCII value of str2 character. As a result, we can say that str2 is lexicographically greater than str1.
+
+3. Equal to zero ( 0 ): This function returns zero if the characters of str1 matches with the characters of the str2 upto num characters. As a result, we cannot say that str1 is equal to str2, until num is equal to length of either string.
+
+
+
+// C, C++ program to demonstrate 
+// functionality of strncmp() 
+  
+#include <stdio.h> 
+#include <string.h> 
+  
+int main() 
+{ 
+    // Take any two strings 
+    char str1[10] = "aksh"; 
+    char str2[10] = "akash"; 
+  
+    // Compare strings using strncmp() 
+    int result = strncmp(str1, str2, 4); 
+  
+    if (result == 0) { 
+        // num is the 3rd parameter of strncmp() function 
+        printf("str1 is equal to str2 upto num characters\n"); 
+    } 
+    else if (result > 0) 
+        printf("str1 is greater than str2\n"); 
+    else
+        printf("str2 is greater than str1\n"); 
+  
+    printf("Value returned by strncmp() is: %d", result); 
+  
+    return 0; 
+} 
+Output:
+
+str1 is greater than str2
+Value returned by strncmp() is: 18
+
+
+
+
+
+Example 2:
+
+// CPP program to illustrate strncmp() 
+#include <cstring> 
+#include <iostream> 
+  
+void display(char* abc, char* xyz, int res, int count) 
+{ 
+    if (res > 0) 
+        std::cout << xyz << " come-before " << abc; 
+    else if (res < 0) 
+        std::cout << abc << " come-before " << xyz; 
+    else
+        std::cout << "First " << count << " characters of string " <<  
+        abc << " and " << xyz << " are same"; 
+    ; 
+} 
+  
+int main() 
+{ 
+    char abc[] = "GeeksforGeeks"; 
+    char xyz[] = "Geeks"; 
+    int res; 
+    res = std::strncmp(abc, xyz, 6); 
+    display(abc, xyz, res, 6); 
+    return 0; 
+} 
+Output:
+Geeks come-before GeeksforGeeks
+
+
+
+
+
+

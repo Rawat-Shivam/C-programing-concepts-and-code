@@ -1,0 +1,93 @@
+
+
+
+Different ways to access namespace
+In C++, there are two ways of accessing namespace variables and functions.
+
+//  using "::" 
+#include <iostream> 
+using namespace std; 
+namespace geek 
+{ 
+    int rel = 300;  
+} 
+int main() 
+{ 
+    cout << geek::rel << "\n";  // prints 300 
+    return 0; 
+} 
+Output :
+300
+
+//  using "using" directive 
+#include <iostream> 
+using namespace std; 
+namespace geek 
+{ 
+    int rel = 300;  
+} 
+using namespace geek; 
+int main() 
+{ 
+   // variable ‘rel’ accessed  
+   // without using scope resolution variable 
+   cout << rel << "\n";        //prints 300 
+   return 0; 
+} 
+Output:
+300
+
+
+Using namespace in header files
+We can create namespace in one file and access contents using another program. This is done in the following manner.
+We need to create two files. One containing the namespace and all the data members and member functions we want to use later.
+And the other program can directly call the first program to use all the data members and member functions in it.
+File 1
+
+// file1.h  
+namespace foo 
+{ 
+    int value()  
+    {  
+       return 5;     
+    } 
+} 
+
+//File2.cpp
+#include <iostream> 
+#include “file1.h” // Including file1 
+using namespace std; 
+int main ()  
+{ 
+    cout << foo::value(); 
+    return 0; 
+} 
+Here we can see that the namespace is created in file1.h and the value() of that namespace is getting called in file2.cpp.
+
+
+Namespace Aliasing
+In C++, you can use an alias name for your namespace name, for ease of use. Existing namespaces can be aliased with new names, with the following syntax: namespace new_name = current_name;
+
+#include <iostream> 
+namespace name1  
+{ 
+    namespace name2  
+    { 
+         namespace name3  
+         { 
+             int var = 42; 
+         } 
+    } 
+} 
+// Aliasing  
+namespace alias = name1::name2::name3; 
+int main() 
+{ 
+    std::cout << alias::var << '\n'; 
+} 
+Output :
+42
+
+
+
+

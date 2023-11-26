@@ -1,0 +1,15 @@
+
+
+#include is a way of including a standard or user-defined file in the program and is mostly written at the beginning of any C/C++ program.
+The process of importing such files that might be system-defined or user-defined is known as File Inclusion.
+
+Including using ” “:
+This type is mainly used to access any header files of the user’s program or user-defined files.
+
+Including using <>:
+ While importing file using angular brackets(<>), the the preprocessor uses a predetermined directory path to access the file. It is mainly used to access system header files located in the standard system directories
+
+
+
+
+

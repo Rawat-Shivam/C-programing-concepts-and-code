@@ -1,0 +1,582 @@
+		
+						
+							/************* OPERATORS **************/
+
+
+
+To access address of a variable to a pointer, we use the unary operator & (ampersand) that returns the address of that variable. For example &x gives us address of variable x.
+
+To access the value stored in the address we use the unary operator (*) that returns the value of the variable located at the address specified by its operand.
+
+
+L-value: “l-value” refers to memory location which identifies an object. l-value may appear as either left hand or right hand side of an assignment operator(=). l-value often represents as identifier.
+
+Expressions referring to modifiable locations are called “modifiable l-values“. A modifiable l-value cannot have an array type, an incomplete type, or a type with the const attribute. For structures and unions to be modifiable lvalues, they must not have any members with the const attribute. The name of the identifier denotes a storage location, while the value of the variable is the value stored at that location.
+
+An identifier is a modifiable lvalue if it refers to a memory location and if its type is arithmetic, structure, union, or pointer. For example, if ptr is a pointer to a storage region, then *ptr is a modifiable l-value that designates the storage region to which ptr points.
+
+In C, the concept was renamed as “locator value”, and referred to expressions that locate (designate) objects. The l-value is one of the following:
+
+The name of the variable of any type i.e, an identifier of integral, floating, pointer, structure, or union type.
+A subscript ([ ]) expression that does not evaluate to an array.
+A unary-indirection (*) expression that does not refer to an array
+An l-value expression in parentheses.
+A const object (a nonmodifiable l-value).
+The result of indirection through a pointer, provided that it isn’t a function pointer.
+The result of member access through pointer(-> or .)
+// declare a an object of type 'int' 
+int a; 
+ 
+// a is an expression referring to an 
+// 'int' object as l-value 
+a = 1; 
+  
+int b = a; // Ok, as l-value can appear on right 
+ 
+// Switch the operand around '=' operator 
+9 = a; 
+ 
+// Compilation error: 
+// as assignment is trying to change the 
+// value of assignment operator 
+
+R-value: r-value” refers to data value that is stored at some address in memory. A r-value is an expression that can’t have a value assigned to it which means r-value can appear on right but not on left hand side of an assignment operator(=).
+// declare a, b an object of type 'int' 
+int a = 1, b; 
+ 
+a + 1 = b; // Error, left expression is 
+           // is not variable(a + 1) 
+ 
+// declare pointer variable 'p', and 'q' 
+int *p, *q; // *p, *q are lvalue 
+ 
+*p = 1; // valid l-value assignment 
+ 
+// below is invalid - "p + 2" is not an l-value  
+// p + 2 = 18;  
+ 
+q = p + 5; // valid - "p + 5" is an r-value 
+ 
+// Below is valid - dereferencing pointer 
+// expression gives an l-value 
+*(p + 2) = 18; 
+ 
+p = &b;  
+ 
+int arr[20]; // arr[12] is an lvalue; equivalent 
+              // to *(arr+12) 
+              // Note: arr itself is also an lvalue 
+ 
+struct S { int m; }; 
+ 
+struct S obj; // obj and obj.m are lvalues 
+ 
+// ptr-> is an lvalue; equivalent to (*ptr).m 
+// Note: ptr and *ptr are also lvalues 
+struct S* ptr = &obj; 
+Note: The unary & (address-of) operator requires an lvalue as its operand. That is, &n is a valid expression only if n is an lvalue. Thus, an expression such as &12 is an error. Again, 12 does not refer to an object, so it’s not addressable. For instance,
+
+// declare a as int variable and 
+// 'p' as pointer variable 
+int a, *p; 
+ 
+p = &a; // ok, assignment of address 
+        // at l-value 
+ 
+&a = p;    // error: &a is an r-value 
+ 
+int x, y; 
+ 
+(  x < y ? y : x) = 0; // It's valid because the ternary 
+                  // expression preserves the "lvalue-ness" 
+                 // of both its possible return values 
+Remembering the mnemonic, that lvalues can appear on the left of an assignment operator while rvalues can appear on the right
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Pre-increment (or pre-decrement) in C++
+In C++, pre-increment (or pre-decrement) can be used as l-value, but post-increment (or post-decrement) can not be used as l-value.
+For example, following program prints a = 20 (++a is used as l-value)
+/******************************************************************************************************************
+// CPP program to illustrate 
+// Pre-increment (or pre-decrement) 
+#include <cstdio> 
+  
+int main() 
+{ 
+    int a = 10; 
+  
+    ++a = 20; // works 
+  
+    printf("a = %d", a); 
+    getchar(); 
+    return 0; 
+} 
+/******************************************************************************************************************
+a = 20
+The above program works whereas the following program fails in compilation with error “non-lvalue in assignment” (a++ is used as l-value)
+/******************************************************************************************************************
+// CPP program to illustrate 
+// Post-increment (or post-decrement) 
+#include <cstdio> 
+  
+int main() 
+{ 
+    int a = 10; 
+    a++ = 20; // error 
+    printf("a = %d", a); 
+    getchar(); 
+    return 0; 
+} 
+/******************************************************************************************************************
+prog.cpp: In function 'int main()':
+prog.cpp:6:5: error: lvalue required as left operand of assignment
+ a++ = 20; // error 
+     ^
+How ++a is different from a++ as lvalue?
+
+It is because ++a returns an lvalue, which is basically a reference to the variable to which we can further assign — just like an ordinary variable. It could also be assigned to a reference as follows:
+
+int &ref = ++a; // valid
+int &ref = a++; // invalid
+Whereas if you recall how a++ works, it doesn’t immediately increment the value it holds. For brevity, you can think of it as getting incremented in the next statement. So what basically happens is that a++ returns an rvalue, which is basically just a value like the value of an expression which is not stored. You can think of a++ = 20; as follows after being processed:
+
+int a = 10;
+
+// On compilation, a++ is replaced by the value of a which is an rvalue:
+10 = 20; // Invalid
+
+// Value of a is incremented
+a = a + 1;
+That should help to understand why a++ = 20; won’t work.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Short-Circuiting in Logical Operators:
+In case of logical AND, the second operand is not evaluated if first operand is false.
+For example, program 1 below doesn’t print “GeeksQuiz” as the first operand of logical AND itself is false.
+/******************************************************************************************************************
+#include <iostream> 
+using namespace std; 
+  
+int main() 
+{ 
+    int a = 10, b = 4; 
+    bool res = ((a == b) && cout << "GeeksQuiz"); 
+    return 0; 
+} 
+*****************************************************************************************************************/
+But below program prints “GeeksQuiz” as first operand of logical AND is true.
+/****************************************************************************************************************
+#include <iostream> 
+using namespace std; 
+  
+int main() 
+{ 
+    int a = 10, b = 4; 
+    bool res = ((a != b) && cout << "GeeksQuiz"); 
+    return 0; 
+} 
+******************************************************************************************************************/
+
+In case of logical OR, 
+
+the second operand is not evaluated if first operand is true. For example, program 1 below doesn’t print “GeeksQuiz” as the first operand of logical OR itself is true.
+******************************************************************************************************************/
+#include <stdbool.h> 
+#include <stdio.h> 
+int main() 
+{ 
+    int a = 10, b = 4; 
+    bool res = ((a != b) || cout << "GeeksQuiz"); 
+    return 0; 
+} 
+******************************************************************************************************************/
+But below program prints “GeeksQuiz” as first operand of logical OR is false.
+******************************************************************************************************************/
+#include <stdbool.h> 
+#include <stdio.h> 
+int main() 
+{ 
+    int a = 10, b = 4; 
+    bool res = ((a == b) || printf("GeeksQuiz")); 
+    return 0; 
+} 
+******************************************************************************************************************/
+
+
+
+
+
+
+
+
+
+
+The left shift and right shift operators should not be used for negative numbers. 
+If any of the operands is a negative number, it results in undefined behaviour. For example results of both -1 << 1 and 1 << -1 is undefined. Also, if the number is shifted more than the size of integer, the behaviour is undefined. For example, 1 << 33 is undefined if integers are stored using 32 bits.
+
+
+The bitwise XOR operator is the most useful operator from technical interview perspective.
+ It is used in many problems. A simple example could be “Given a set of numbers where all elements occur even number of times except one number, find the odd occurring number” This problem can be efficiently solved by just doing XOR of all numbers.
+******************************************************************************************************************/
+#include <stdio.h> 
+// Function to return the only odd 
+// occurring element 
+int findOdd(int arr[], int n) 
+{ 
+    int res = 0, i; 
+    for (i = 0; i < n; i++) 
+        res ^= arr[i]; 
+    return res; 
+} 
+int main(void) 
+{ 
+    int arr[] = { 12, 12, 14, 90, 14, 14, 14 }; 
+    int n = sizeof(arr) / sizeof(arr[0]); 
+    printf("The odd occurring element is %d ", 
+           findOdd(arr, n)); 
+    return 0; 
+}
+******************************************************************************************************************/
+The following are many other interesting problems using XOR operator.
+
+Q1:	Find the Missing Number
+Q2:	swap two numbers without using a temporary variable
+Q3:	A Memory Efficient Doubly Linked List
+Q4:	Find the two non-repeating elements.
+Q6:	Find the two numbers with odd occurences in an unsorted-array.
+Q7:	Add two numbers without using arithmetic operators.
+Q8:	Swap bits in a given number/.
+Q9:	Count number of bits to be flipped to convert a to b .
+Q10:	Find the element that appears once.
+Q11:	Detect if two integers have opposite signs.
+
+
+
+
+
+
+
+
+
+
+SIZEOF()
+
+It is a compile time unary operator which can be used to compute the size of its operand. The result of sizeof is of unsigned integral type which is usually denoted by size_t. sizeof can be applied to any data-type, including primitive types such as integer and floating-point types, pointer types, or compound datatypes such as Structure, union etc
+
+When operand is a Data Type:
+When sizeof() is used with the data types such as int, float, char… etc it simply returns the amount of memory is allocated to that data types.
+
+When operand is an expression:
+When sizeof() is used with the expression, it returns size of the expression. Let see example:
+******************************************************************************************************************/
+#include <iostream> 
+using namespace std; 
+int main() 
+{ 
+    int a = 0; 
+    double d = 10.21; 
+    cout << sizeof(a + d)); 
+    return 0; 
+} 
+******************************************************************************************************************/
+Output:
+8
+As we know from first case size of int and double is 4 and 8 respectively, a is int variable while d is a double variable. The final result will be a double, Hence the output of our program is 8 bytes.
+
+
+Need of Sizeof
+
+1. To find out number of elements in a array:
+Sizeof can be used to calculate number of elements of the array automatically. Let see Example :
+******************************************************************************************************************/
+#include <iostream> 
+using namespace std; 
+  
+int main() 
+{ 
+    int arr[] = { 1, 2, 3, 4, 7, 98,  
+    0, 12, 35, 99, 14 }; 
+    cout << "Number of elements: "
+    <<(sizeof(arr) / sizeof(arr[0])); 
+    return 0; 
+} 
+******************************************************************************************************************/
+
+2. To allocate a block of memory dynamically:
+sizeof is greatly used in dynamic memory allocation. For example, if we want to allocate memory for which is sufficient to hold 10 integers and we don’t know the sizeof(int) in that particular machine. We can allocate with the help of sizeof.
+
+int* ptr = (int*)malloc(10 * sizeof(int)); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+C's offsetof() macro
+is an ANSI C library feature found in stddef.h. It evaluates to the offset (in bytes) of a given member within a struct or union type, an expression of type size_t. The offsetof() macro takes two parameters, the first being a structure name, and the second being the name of a member within the structure. It cannot be described as a C prototype.
+The "traditional" implementation of the macro relied on the compiler obtaining the offset of a member by specifying a hypothetical structure that begins at address zero:
+
+#define offsetof(st, m) ((size_t)&(((st *)0)->m))
+
+This can be understood as taking a null pointer of type structure st, and then obtaining the address of member m within said structure. While this implementation works correctly in many compilers, it has generated some debate if this is undefined behavior according to the C standard,[2] since it appears to involve a dereference of a null pointer 
+An alternative is:
+
+#define offsetof(s,memb) \
+    ((size_t)((char *)&((s *)0)->memb - (char *)0))
+It may be specified this way because the standard does not specify that the internal representation of the null pointer is at address zero. Therefore the difference between the member address and the base address needs to be made. Again, since these are constant expressions it can be calculated at compile time and not necessarily at run-time.
+
+Some modern compilers (such as GCC) define the macro using a special form (as a language extension) instead, e.g.[3]
+
+#define offsetof(st, m) __builtin_offsetof(st, m)
+This builtin is especially useful with C++ classes or structs that declare a custom unary operator &.
+
+It is useful when implementing generic data structures in C. For example, the Linux kernel uses offsetof() to implement container_of(), which allows something like a mixin type to find the structure that contains it:[5]
+
+#define container_of(ptr, type, member) ({ \
+                const typeof( ((type *)0)->member ) *__mptr = (ptr); \
+                (type *)( (char *)__mptr - offsetof(type,member) );})
+This macro is used to retrieve an enclosing structure from a pointer to a nested element, such as this iteration of a linked list of my_struct objects:
+
+******************************************************************************************************************/
+struct my_struct {
+    const char *name;
+    struct list_node list;
+};
+
+extern struct list_node * list_next(struct list_node *);
+
+struct list_node *current = /* ... */
+while (current != NULL) {
+    struct my_struct *element = container_of(current, struct my_struct, list);
+    printf("%s\n", element->name);
+    current = list_next(&element->list);
+}
+******************************************************************************************************************/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+COMMA ',':
+
+1) Comma as an operator:
+The comma operator (represented by the token, ) is a binary operator that evaluates its first operand and discards the result, it then evaluates the second operand and returns this value (and type). The comma operator has the lowest precedence of any C operator, and acts as a sequence point.
+
+/* comma as an operator */
+int i = (5, 10); /* 10 is assigned to i*/
+int j = (f1(), f2()); /* f1() is called (evaluated) first followed by f2().  
+                      The returned value of f2() is assigned to j */
+
+2) Comma as a separator:
+Comma acts as a separator when used with function calls and definitions, function like macros, variable declarations, enum declarations, and similar constructs.
+/* comma as a separator */
+int a = 1, b = 2; 
+void fun(x, y); 
+
+The use of comma as a separator should not be confused with the use as an operator. For example, in below statement, f1() and f2() can be called in any order.
+/* Comma acts as a separator here and doesn't enforce any sequence.  
+    Therefore, either f1() or f2() can be called first */
+void fun(f1(), f2()); 
+
+3) Comma operator in place of a semicolon.
+We know that in C and C++, every statement is terminated with a semicolon but comma operator also used to terminate the statement after satisfying the following rules:
+The variable declaration statements must be terminated with semicolon.
+The statements after declaration statement can be terminated by comma operator.
+The last statement of the program must be terminated by semicolon.
+
+
+
+
+
+
+
+Ternary Operator (C/C++):
+
+A ternary operator has the following form,
+
+exp1 ? exp2 : exp3
+
+The expression exp1 will be evaluated always. Execution of exp2 and exp3 depends on the outcome of exp1. If the outcome of exp1 is non zero exp2 will be evaluated, otherwise exp3 will be evaluated.
+
+Side Effects:
+
+Any side effects of exp1 will be evaluated and updated immediately before executing exp2 or exp3. In other words, there is sequence point after the evaluation of condition in the ternary expression. If either exp2 or exp3 have side effects, only one of them will be evaluated.
+
+Return Type:
+
+It is another interesting fact. The ternary operator has return type. The return type depends on exp2, and convertibility of exp3 into exp2 as per usual\overloaded conversion rules. If they are not convertible, the compiler throws an error. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+The & (bitwise AND) 
+in C or C++ takes two numbers as operands and does AND on every bit of two numbers. The result of AND is 1 only if both bits are 1.
+The | (bitwise OR) 
+in C or C++ takes two numbers as operands and does OR on every bit of two numbers. The result of OR is 1 if any of the two bits is 1.
+The ^ (bitwise XOR)
+ in C or C++ takes two numbers as operands and does XOR on every bit of two numbers. The result of XOR is 1 if the two bits are different.
+The << (left shift) 
+in C or C++ takes two numbers, left shifts the bits of the first operand, the second operand decides the number of places to shift.
+The >> (right shift)
+ in C or C++ takes two numbers, right shifts the bits of the first operand, the second operand decides the number of places to shift.
+The ~ (bitwise NOT) 
+in C or C++ takes one number and inverts all bits of it
+
+
+
+
+
+
+
+
+
+Arithmetic operator (+, -, *, /, %,++,–) : Unary Operators and Binary Operators
+Relational Operators: 
+Logical Operators: 
+Bitwise Operators: The Bitwise operators is used to perform bit-level operations on the operands. 
+Assignment Operators: “ = ” , “ += ” , “ -= ” , " *= " , " /= "
+sizeof operator: 
+Comma Operator: 
+Conditional Operator: 
+
+
+Operator precedence chart
+
+The below table describes the precedence order and associativity of operators in C / C++ . Precedence of operator decreases from top to bottom.
+
+OPERATOR		DESCRIPTION						ASSOCIATIVITY
+()			Parentheses (function call)				left-to-right
+[]			Brackets (array subscript)	
+.			Member selection via object name	
+->			Member selection via pointer	
+++/–			Postfix increment/decrement	
+++/–			Prefix increment/decrement				right-to-left
++/-			Unary plus/minus	
+!~			Logical negation/bitwise complement	
+(type)			Cast (convert value to temporary value of type)	
+*			Dereference	
+&			Address (of operand)	
+sizeof			Determine size in bytes on this implementation	
+*,/,%			Multiplication/division/modulus				left-to-right
++/-			Addition/subtraction					left-to-right
+<< , >>			Bitwise shift left,Bitwise shift right			left-to-right
+< , <=			Relational less than/less than or equal to		left-to-right
+> , >=			Relational greater than/greater than or equal to	left-to-right
+== , !=			Relational is equal to/is not equal to			left-to-right
+&			Bitwise AND						left-to-right
+^			Bitwise exclusive OR					left-to-right
+|			Bitwise inclusive OR					left-to-right
+&&			Logical AND						left-to-right
+||			Logical OR						left-to-right
+?:			Ternary conditional					right-to-left
+=			Assignment						right-to-left
++= , -=			Addition/subtraction assignment	
+*= , /=			Multiplication/division assignment	
+%= , &=			Modulus/bitwise AND assignment	
+^= , |=			Bitwise exclusive/inclusive OR assignment	
+<>=			Bitwise shift left/right assignment	
+,			expression separator					left-to-right
+
+
+
+.......................................................................................................................................
+
+
+
+
+Logical Operators:
+They are used to combine two or more CONDITIONS/constraints or to complement the evaluation of the original condition under consideration.
+Logical AND operator: 
+The ‘&&’ operator returns true when both the conditions under consideration are satisfied. Otherwise it returns false. For example, a && b returns true when both a and b are true (i.e. non-zero).
+Logical OR operator: 
+The ‘||’ operator returns true even if one (or both) of the conditions under consideration is satisfied. Otherwise it returns false. For example, a || b returns true if one of a or b or both are true (i.e. non-zero). Of course, it returns true when both a and b are true.
+Logical NOT operator: 
+The ‘!’ operator returns true the condition in consideration is not satisfied. Otherwise it returns false. For example, !a returns true if a is false, i.e. when a=0.
+
+
+
+
+
+
+
+
+
+
+
+
+

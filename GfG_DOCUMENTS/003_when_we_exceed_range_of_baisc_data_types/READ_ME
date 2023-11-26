@@ -1,0 +1,112 @@
+
+					/***** exceding range of dataType*******/
+
+Program to show what happens when we cross range of ‘char’ :
+/*********************************************************************
+// C++ program to demonstrate 
+// the problem with 'char' 
+#include <iostream> 
+using namespace std; 
+int main() 
+{ 
+    for (char a = 0; a <= 225; a++) 
+        cout << a; 
+    return 0; 
+} 
+********************************************************************/
+Will this code print ‘a’ till it becomes 226? Well the answer is indefinite loop, because here ‘a’ is declared as a char and its valid range is -128 to +127. When ‘a’ become 128 through a++, the range is exceeded and as a result the first number from negative side of the range (i.e. -128) gets assigned to a. Hence the condition “a <= 225” is satisfied and control remains within the loop.
+
+
+
+
+ Program to show what happens when we cross range of ‘bool’ :
+/************************************************************************
+// C++ program to demonstrate 
+// the problem with 'bool' 
+#include <iostream> 
+  
+using namespace std; 
+  
+int main() 
+{ 
+    // declaring Boolean 
+    // variable with true value 
+    bool a = true; 
+  
+    for (a = 1; a <= 5; a++) 
+        cout << a; 
+  
+    return 0; 
+} 
+**************************************************************************/
+This code will print ‘1’ infinite time because here ‘a’ is declared as ‘bool’ and it’s valid range is 0 to 1. And for a Boolean variable anything else than 0 is 1 (or true). When ‘a’ tries to become 2 (through a++), 1 gets assigned to ‘a’. The condition a<=5 is satisfied and the control remains with in the loop.
+
+
+
+
+
+Program to show what happens when we cross range of ‘short’ :
+Note that short is short for short int. They are synonymous. short, short int, signed short, and signed short int are all the same data-type.
+
+/****************************************************************************************
+// C++ program to demonstrate 
+// the problem with 'short' 
+#include <iostream> 
+using namespace std; 
+int main() 
+{ 
+    // declaring short variable 
+    short a; 
+  
+    for (a = 32767; a < 32770; a++) 
+        cout << a << "\n"; 
+  
+    return 0; 
+} 
+********************************************************************************************/
+Will this code print ‘a’ till it becomes 32770? Well the answer is indefinite loop, because here ‘a’ is declared as a short and its valid range is -32768 to +32767. When ‘a’ tries to become 32768 through a++, the range is exceeded and as a result the first number from negative side of the range(i.e. -32768) gets assigned to a. Hence the condition “a < 32770" is satisfied and control remains within the loop.
+
+
+
+
+
+
+ Program to show what happens when we cross range of ‘unsigned short’ :
+
+/**********************************************************************************
+// C++ program to demonstrate 
+// the problem with 'unsigned short' 
+#include <iostream> 
+using namespace std; 
+int main() 
+{ 
+    unsigned short a; 
+  
+    for (a = 65532; a < 65536; a++) 
+        cout << a << "\n"; 
+  
+    return 0; 
+} 
+*************************************************************************************/
+Will this code print ‘a’ till it becomes 65536? Well the answer is indefinite loop, because here ‘a’ is declared as a short and its valid range is 0 to +65535. When ‘a’ tries to become 65536 through a++, the range is exceeded and as a result the first number from the range(i.e. 0) gets assigned to a. Hence the condition “a < 65536” is satisfied and control remains within the loop
+
+
+
+
+
+The values true or false have been added as keywords in the C++ language.
+Important Points:
+The default numeric value of true is 1 and false is 0.
+We can use bool type variables or values true and false in mathematical expressions also.For instance,
+int x = false + true + 6;
+is valid and the expression on right will evaluate to 7 as false has value 0 and true will have value 1.
+
+It is also possible to convert implicitly the data type integers or floating point values to bool type. For example, the statements-
+bool x = 0;  // false 
+bool y = 100;  // true 
+bool z = 15.75;  // true
+
+
+
+
+

@@ -1,0 +1,17 @@
+
+
+When exit(0) is used to exit from program, destructors for locally scoped non-static objects are not called. But destructors are called if return 0 is used.
+
+Calling destructors is sometimes important, for example, if destructor has code to release resources like closing files.
+
+Note that static objects will be cleaned up even if we call exit()
+
+if return :: constructor and destructor called
+
+if exit:: constructor only called
+	{ if static object(static class_name class_obj) :: destructor also called
+
+
+
+
+

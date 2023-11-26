@@ -1,0 +1,162 @@
+
+
+
+Preventing Object Copy in C++ (3 Different Ways)
+Many times, user wants that an instance of a C++ class should not be copied at all. So, the question is how do we achieve this ?
+
+There are three ways to achieve this :
+
+Keeping the Copy Constructor and Copy assignment operator as private in the class.
+
+
+Below is the C++ implementation to illustrate how this can be done.
+
+#include <iostream> 
+using namespace std; 
+  
+class Base { 
+    int x; 
+public: 
+    Base()    {  } 
+    Base(int y): x(y)     {  } 
+private: 
+  
+    // Copy constructor 
+    Base(const Base& obj) : x(obj.x) {   } 
+  
+    // copy assignment operator 
+    Base& operator=(const Base& tmp_obj) 
+    { 
+        x = tmp_obj.x; 
+        return *this; 
+    } 
+}; 
+  
+int main() 
+{ 
+    Base b1(10); 
+    Base b2(b1); // calls copy constructor 
+    b2 = b1; // calls copy assignment operator 
+    return 0; 
+} 
+NOTE: This code does not compile as we cannot copy the object of this class and hence it will show this error.
+
+prog.cpp: In function 'int main()':
+prog.cpp:18:2: error: 'Base::Base(const Base&)' is private
+  Base(const Base &obj) : x(obj.x) //Copy constructor
+  ^
+prog.cpp:33:12: error: within this context
+  Base b2(b1); // Calls copy constructor
+            ^
+prog.cpp:22:8: error: 'Base& Base::operator=(const Base&)' is private
+  Base& operator = (const Base& tmp_obj) // copy assignment operator
+        ^
+prog.cpp:35:5: error: within this context
+  b2 = b1; // calls copy assignment operator
+     ^
+Inherit a Dummy class with a private copy constructor and a private copy assignment operator.
+Below is the C++ implementation to illustrate how this can be done.
+
+#include <iostream> 
+using namespace std; 
+  
+class Dummy { 
+public: 
+    Dummy() {  } 
+private: 
+    Dummy(const Dummy& temp_obj)  {   } 
+    Dummy& operator=(const Dummy& temp_obj)   {   } 
+}; 
+  
+class Base : public Dummy { 
+    int x; 
+public:  
+    Base()  {   } 
+    Base(int y) : x(y)  {  } 
+}; 
+  
+int main() 
+{ 
+    Base b1(10); 
+    Base b2(b1); // Calls copy constructor 
+    b2 = b1; // Calls copy assignment operator 
+    return 0; 
+} 
+prog.cpp: In function 'int main()':
+
+prog.cpp:12:5: error: 
+'Dummy::Dummy(const Dummy&)' is private
+     Dummy(const Dummy &temp_obj)
+     ^
+prog.cpp:22:7: error: within this context
+ class Base: public Dummy
+       ^
+prog.cpp:16:12: error: 
+'Dummy& Dummy::operator=(const Dummy&)' is private
+     Dummy& operator = (const Dummy &temp_obj)
+            ^
+prog.cpp:22:7: error: within this context
+ class Base: public Dummy
+NOTE: This code does not compile as we cannot copy the object of this class and hence it will show this error.
+
+Using Deleted copy constructor and copy assignment operator: Above two ways are quite complex, C++11 has come up with a simpler solution i.e. just delete the copy constructor and assignment operator.
+Below is the C++ implementation to illustrate :
+
+// CPP program to demonstrate use Delete copy 
+// constructor and delete assignment operator 
+#include <iostream> 
+using namespace std; 
+  
+class Base { 
+    int x; 
+public: 
+    Base()   {     } 
+    Base(int y) : x(y) {    } 
+    Base(const Base& temp_obj) = delete; 
+    Base& operator=(const Base& temp_obj) = delete; 
+}; 
+  
+int main() 
+{ 
+    Base b1(10); 
+    Base b2(b1); // Calls copy constructor 
+    b2 = b1; // Calls copy assignment operator 
+    return 0; 
+} 
+prog.cpp: In function 'int main()':
+prog.cpp:24:15: error: use of deleted function
+ 'Base::Base(const Base&)'
+     Base b2(b1); // Calls copy constructor
+               ^
+prog.cpp:16:5: note: declared here
+     Base(const Base &temp_obj) = delete;
+     ^
+prog.cpp:26:8: error: use of deleted function 
+'Base& Base::operator=(const Base&)'
+     b2 = b1;  // Calls copy assignment operator
+        ^
+prog.cpp:17:11: note: declared here
+     Base& operator = (const Base &temp_obj) = delete;
+           ^
+NOTE: This code does not work as we cannot copy the object of this class and hence it will show this error.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,13 @@
+
+
+string class
+
+string can be add,assign ,modifiy,
+find(),erase(),replace(),insert(),erase(),append(),size()
+==,<,>,
+compare(),substr(),lenght(),copy()
+
+
+
+string class and new operator can be used
+string str1 =new char(lenght(str2)+1); // please check document;

@@ -1,0 +1,656 @@
+
+
+
+
+
+
+
+
+
+
+
+What’s difference between “array” and “&array” for “int array[5]” ?
+If someone has defined an array such as “int array[5]”, what’s the meaning of “array” or “&array”? Are they both same or are they different? You might be tempted to think that they both would point to the very first element of the array i.e. they both will have same address. Let us find out!
+
+To check this, the very first thing that comes to mind is the following program.
+*********************************************************************************/
+#include "stdio.h" 
+int main() 
+{ 
+   int array[5]; 
+  
+   /* If %p is new to you, you can use %d as well */
+   printf("array=%p : &array=%p\n", array, &array); 
+  
+   return 0; 
+} 
+*********************************************************************************/
+So you got same address for both “array” and “&array”. Again, you are tempted to think that both are same. Well, they aren’t not! How come a variable and its & (i.e. address-of) be same. It doesn’t look logical but we saw that both “array” and “&array” are printing same address. May be it’s too soon to conclude. The crux of this post is that even though they both are resulting in same address but they are different types of addresses. And this is the difference between “array” and “&array”.
+
+
+And just to show this difference, I would suggest to take a look at the following program.
+*********************************************************************************/
+#include "stdio.h" 
+int main() 
+{ 
+   int array[5]; 
+  
+   /* If %p is new to you, you can use %d as well */
+   printf("array=%p : &array=%p\n", array, &array);  
+  
+   printf("array+1 = %p : &array + 1 = %p", array+1, &array+1); 
+  
+   return 0; 
+} 
+*********************************************************************************/
+With pointer arithmetic, we know what happens when we add an integer to a pointer. So can you guess the output of the above program without running it? Shouldn’t “array+1” and “&array+1” point to same address. Well you might be surprised 🙂
+
+Basically, “array” is a “pointer to the first element of array” but “&array” is a “pointer to whole array of 5 int”. Since “array” is pointer to int, addition of 1 resulted in an address with increment of 4 (assuming int size in your machine is 4 bytes). Since “&array” is pointer to array of 5 ints, addition of 1 resulted in an address with increment of 4 x 5 = 20 = 0x14. Now you see why these two seemingly similar pointers are different at core level. This logic can be extended to multidimensional arrays as well. Suppose double twoDarray[5][4] is a 2D array. Here, “twoDarray” is a pointer to array of 4 int but “&twoDarray” is pointer to array of 5 rows arrays of 4 int”. If this sounds cryptic, you can always have a small program to print these after adding 1. We hope that we could clarify that any array name itself is a pointer to the first element but & (i.e. address-of) for the array name is a pointer to the whole array itself.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Vector in C++ is a class in STL that represents an array. The advantages of vector over normal arrays are,
+
+We do not need pass size as an extra parameter when we declare a vector i.e, Vectors support dynamic sizes (we do not have to initially specify size of a vector). We can also resize a vector.
+Vectors have many in-built function like, removing an element, etc.
+
+
+
+
+
+
+
+
+In C, it is possible to have array of all types except void and functions. See this for details.
+Arrays are always passed as pointer to functions. See this for details.
+A character array initialized with double quoted string has last element as ‘\0’.
+
+
+
+
+Like other variables, arrays can be allocated memory in any of the three segments, data, heap, and stack (See this for details). Dynamically allocated arrays are allocated memory on heap, static or global arrays are allocated memory on data segment and local arrays are allocated memory on stack segment.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+How to compute size of an array parameter in a function?
+
+Consider below C++ program:
+*********************************************************************************/
+// A C++ program to show that it is wrong to  
+// compute size of an array parameter in a function 
+#include <iostream> 
+using namespace std; 
+  
+void findSize(int arr[]) 
+{ 
+    cout << sizeof(arr) << endl; 
+} 
+  
+int main() 
+{ 
+    int a[10]; 
+    cout << sizeof(a) << " "; 
+    findSize(a); 
+    return 0; 
+}
+*********************************************************************************/
+Output:
+40 8
+
+The above output is for a machine where size of integer is 4 bytes and size of a pointer is 8 bytes.
+The cout statement inside main prints 40, and cout in findSize prints 8. The reason is, arrays are always passed pointers in functions, i.e., findSize(int arr[]) and findSize(int *arr) mean exactly same thing. Therefore the cout statement inside findSize() prints size of a pointer. See this and this for details.
+
+
+How to find size of array in function?
+We can pass a ‘reference to the array’.
+*********************************************************************************/
+// A C++ program to show that we can use reference to 
+// find size of array 
+#include <iostream> 
+using namespace std; 
+  
+void findSize(int (&arr)[10]) 
+{ 
+    cout << sizeof(arr) << endl; 
+} 
+  
+int main() 
+{ 
+    int a[10]; 
+    cout << sizeof(a) << " "; 
+    findSize(a); 
+    return 0; 
+} 
+*********************************************************************************/
+Output:
+40 40
+
+The above program doesn’t look good as we have hardcoded size of array parameter. We can do it better using templates in C++.
+
+
+*********************************************************************************/
+// A C++ program to show that we use template and 
+// reference to find size of integer array parameter 
+#include <iostream> 
+using namespace std; 
+  
+template <size_t n> 
+void findSize(int (&arr)[n]) 
+{ 
+    cout << sizeof(int) * n << endl; 
+} 
+  
+int main() 
+{ 
+    int a[10]; 
+    cout << sizeof(a) << " "; 
+    findSize(a); 
+    return 0; 
+} 
+*********************************************************************************/
+Output:
+
+40 40
+We can make a generic function as well:
+
+*********************************************************************************/
+// A C++ program to show that we use template and 
+// reference to find size of any type array parameter 
+#include <iostream> 
+using namespace std; 
+  
+template <typename T, size_t n> 
+void findSize(T (&arr)[n]) 
+{ 
+    cout << sizeof(T) * n << endl; 
+} 
+  
+int main() 
+{ 
+    int a[10]; 
+    cout << sizeof(a) << " "; 
+    findSize(a); 
+  
+    float f[20]; 
+    cout << sizeof(f) << " "; 
+    findSize(f); 
+    return 0; 
+} 
+*********************************************************************************/
+Output:
+
+40 40
+80 80
+Now the next step is to print the size of a dynamically allocated array. It’s your task man ! I’m giving you a hint.
+
+*********************************************************************************/
+#include <iostream> 
+#include <cstdlib> 
+using namespace std; 
+  
+int main() 
+{ 
+    int *arr = (int*)malloc(sizeof(float) * 20); 
+    return 0; 
+}
+*********************************************************************************/
+
+
+
+
+
+
+
+
+
+
+
+
+
+Why C treats array parameters as pointers?
+In C, array parameters are treated as pointers. The following two definitions of foo() look different, but to the compiler they mean exactly the same thing. It’s preferable to use whichever syntax is more accurate for readability. If the pointer coming in really is the base address of a whole array, then we should use [ ].
+*********************************************************************************/
+void foo(int arr_param[])  
+{ 
+  
+  /* Silly but valid. Just changes the local pointer */
+  arr_param = NULL;  
+} 
+  
+void foo(int *arr_param)  
+{ 
+  
+  /* ditto */
+  arr_param = NULL;  
+} 
+*********************************************************************************/
+Array parameters treated as pointers because of efficiency. It is inefficient to copy the array data in terms of both memory and time; and most of the times, when we pass an array our intention is to just tell the array we interested in, not to create a copy of the array.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+What is the difference between single quoted and double quoted declaration of char array?
+In C/C++, when a character array is initialized with a double quoted string and array size is not specified, compiler automatically allocates one extra space for string terminator ‘\0’. For example, following program prints 6 as output.
+*********************************************************************************/
+#include<stdio.h> 
+int main() 
+{ 
+  // size of arr[] is 6 as it is '\0' terminated  
+  char arr[] = "geeks"; 
+  
+  printf("%lu", sizeof(arr)); 
+  
+  return 0; 
+} 
+*********************************************************************************/
+Output :
+6
+
+If array size is specified as 5 in the above program then the program works without any warning/error and prints 5 in C, but causes compilation error in C++.
+*********************************************************************************/
+// Works in C, but compilation error in C++ 
+#include<stdio.h> 
+int main() 
+{ 
+  // arr[] is not terminated with '\0' 
+  // and its size is 5 
+  char arr[5] = "geeks";  
+    
+  printf("%lu", sizeof(arr)); 
+    
+  return 0; 
+} 
+*********************************************************************************/
+Output :
+5
+
+When character array is initialized with comma separated list of characters and array size is not specified, compiler doesn’t create extra space for string terminator ‘\0’. For example, following program prints 5.
+*********************************************************************************/
+#include<stdio.h> 
+int main() 
+{ 
+  // arr[] is not terminated with '\0'  
+  // and its size is 5  
+  char arr[]= {'g', 'e', 'e', 'k', 's'};  
+  
+  printf("%lu", sizeof(arr)); 
+  
+  return 0; 
+} 
+*********************************************************************************/
+Output :
+5
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+In C, when we pass an array to a function say fun(), it is always treated as a pointer by fun(). Below example demonstrates the same.
+*********************************************************************************/
+#include <stdio.h> 
+  
+// Note that arr[] for fun is just a pointer even if square 
+// brackets are used 
+void fun(int arr[])  // SAME AS void fun(int *arr) 
+{ 
+   unsigned int n = sizeof(arr)/sizeof(arr[0]); 
+   printf("\nArray size inside fun() is %d", n); 
+} 
+  
+// Driver program 
+int main() 
+{ 
+   int arr[] = {1, 2, 3, 4, 5, 6, 7, 8}; 
+   unsigned int n = sizeof(arr)/sizeof(arr[0]); 
+   printf("Array size inside main() is %d", n); 
+   fun(arr); 
+   return 0; 
+} 
+*********************************************************************************/
+Output:
+
+Array size inside main() is 8
+Array size inside fun() is 1
+Therefore in C, we must pass size of array as a parameter. Size may not be needed only in case of ‘\0’ terminated character arrays, size can be determined by checking end of string character.
+
+
+
+ 
+
+Following is a simple example to show how arrays are typically passed in C.
+*********************************************************************************/
+#include <stdio.h> 
+  
+void fun(int *arr, unsigned int n) 
+{ 
+   int i; 
+   for (i=0; i<n; i++) 
+     printf("%d  ", arr[i]); 
+} 
+  
+// Driver program 
+int main() 
+{ 
+   int arr[] = {1, 2, 3, 4, 5, 6, 7, 8}; 
+   unsigned int n = sizeof(arr)/sizeof(arr[0]); 
+   fun(arr, n); 
+   return 0; 
+} 
+*********************************************************************************/
+Output:
+
+1  2  3  4  5  6  7  8
+Exercise:
+Predict the output of below C programs:
+*********************************************************************************/
+#include <stdio.h>  
+void fun(int arr[], unsigned int n)  
+{  
+int i;  
+for (i=0; i<n; i++)  
+    printf("%d ", arr[i]);  
+}  
+  
+// Driver program  
+int main()  
+{  
+int arr[] = {1, 2, 3, 4, 5, 6, 7, 8};  
+unsigned int n = sizeof(arr)/sizeof(arr[0]);  
+fun(arr, n);  
+return 0;  
+} 
+*********************************************************************************/
+#include <stdio.h> 
+void fun(int *arr) 
+{ 
+   int i; 
+   unsigned int n = sizeof(arr)/sizeof(arr[0]); 
+   for (i=0; i<n; i++) 
+     printf("%d  ", arr[i]); 
+} 
+  
+// Driver program 
+int main() 
+{ 
+   int arr[] = {1, 2, 3, 4, 5, 6, 7, 8}; 
+   fun(arr); 
+   return 0; 
+}
+*********************************************************************************/
+#include <stdio.h> 
+#include <string.h> 
+  
+void fun(char *arr) 
+{ 
+   int i; 
+   unsigned int n = strlen(arr); 
+   printf("n = %d\n", n); 
+   for (i=0; i<n; i++) 
+     printf("%c  ", arr[i]); 
+} 
+  
+// Driver program 
+int main() 
+{ 
+   char arr[] = "geeksquiz"; 
+   fun(arr); 
+   return 0; 
+}
+*********************************************************************************/
+#include <stdio.h> 
+#include <string.h> 
+  
+void fun(char *arr) 
+{ 
+   int i; 
+   unsigned int n = strlen(arr); 
+   printf("n = %d\n", n); 
+   for (i=0; i<n; i++) 
+     printf("%c  ", arr[i]); 
+} 
+  
+// Driver program 
+int main() 
+{ 
+   char arr[] = {'g', 'e', 'e', 'k', 's', 'q', 'u', 'i', 'z'}; 
+   fun(arr); 
+   return 0; 
+}
+*********************************************************************************/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+In C, it is possible to have array of all types except following.
+1) void.
+2) functions.
+For example, below program throws compiler error
+
+int main()
+{
+    void arr[100];
+}
+Output:
+error: declaration of 'arr' as array of voids 
+
+But we can have array of void pointers and function pointers. The below program works fine.
+
+int main()
+{
+    void *arr[100];
+}
+See examples of function pointers for details of array function pointers.
+
+
+
+
+
+
+
+
+
+
+They can be used to store collection of primitive data types such as int, float, double, char, etc of any particular type. To add to it, an array in C or C++ can store derived data types such as the structures, pointers etc.
+The idea of an array is to represent many instances in one variable.
+
+Advantages of an Array in C/C++:
+
+Random access of elements using array index.
+Use of less line of code as it creates a single array of multiple elements.
+Easy access to all the elements.
+Traversal through the array becomes easy using a single loop.
+Sorting becomes easy as it can be accomplished by writing less line of code.
+
+Disadvantages of an Array in C/C++:
+
+Allows a fixed number of elements to be entered which is decided at the time of declaration. Unlike a linked list, an array in C is not dynamic.
+Insertion and deletion of elements can be costly since the elements are needed to be managed in accordance with the new memory allocation.
+
+Array elements are accessed by using an integer index
+#include <iostream> 
+using namespace std; 
+  
+*********************************************************************************/
+int main() 
+{ 
+    int arr[5]; 
+    arr[0] = 5; 
+    arr[2] = -10; 
+  
+    // this is same as arr[1] = 2 
+    arr[3 / 2] = 2; 
+    arr[3] = arr[0]; 
+  
+    cout << arr[0] << " " << arr[1] 
+         << " " << arr[2] << " " << arr[3]; 
+  
+    return 0; 
+} 
+*********************************************************************************/
+Output:
+5 2 -10 5
+
+No Index Out of bound Checking:
+There is no index out of bounds checking in C/C++, for example, the following program compiles fine but may produce unexpected output when run.
+*********************************************************************************/
+// This C++ program compiles fine 
+// as index out of bound 
+// is not checked in C. 
+  
+#include <iostream> 
+using namespace std; 
+  
+int main() 
+{ 
+    int arr[2]; 
+  
+    cout << arr[3] << " "; 
+    cout << arr[-2] << " "; 
+  
+    return 0; 
+} 
+*********************************************************************************/
+Output:
+2008101287 4195777
+
+
+In C, it is not compiler error to initialize an array with more elements than the specified size. For example, the below program compiles fine and shows just Warning.
+*********************************************************************************/
+Output:
+#include <stdio.h> 
+int main() 
+{ 
+  
+    // Array declaration by initializing it with more 
+    // elements than specified size. 
+    int arr[2] = { 10, 20, 30, 40, 50 }; 
+  
+    return 0;
+*********************************************************************************/
+Note: The program won’t compile in C++. If we save the above program as a .cpp, the program generates compiler error “error: too many initializers for ‘int [2]'”.
+
+
+
+The elements are stored at contiguous memory locations
+Example:
+*********************************************************************************/
+// C program to demonstrate that array elements are stored 
+// contiguous locations 
+  
+#include <stdio.h> 
+int main() 
+{ 
+    // an array of 10 integers.  If arr[0] is stored at 
+    // address x, then arr[1] is stored at x + sizeof(int) 
+    // arr[2] is stored at x + sizeof(int) + sizeof(int) 
+    // and so on. 
+    int arr[5], i; 
+  
+    printf("Size of integer in this compiler is %lu\n", sizeof(int)); 
+  
+    for (i = 0; i < 5; i++) 
+        // The use of '&' before a variable name, yields 
+        // address of variable. 
+        printf("Address arr[%d] is %p\n", i, &arr[i]); 
+  
+    return 0; 
+} 
+*********************************************************************************/
+Output:
+Size of integer in this compiler is 4
+Address arr[0] is 0x7ffd636b4260
+Address arr[1] is 0x7ffd636b4264
+Address arr[2] is 0x7ffd636b4268
+Address arr[3] is 0x7ffd636b426c
+Address arr[4] is 0x7ffd636b4270
+
+
+Array vs Pointers
+Arrays and pointer are two different things (we can check by applying sizeof). The confusion happens because array name indicates the address of first element and arrays are always passed as pointers (even if we use square bracket)
+
+

@@ -1,0 +1,210 @@
+An element at location [2][1][2] can be accessed as “buffer[2][1][2]” or *( *( *(buffer + 2) + 1) + 2).
+Based on the above concept translating the expression *( *( *(buffer + 2) + 1) + 2) step-by-step makes it more clear.
+
+buffer – An array of 5 two dimensional arrays, i.e. its type is “array of 5 two dimensional arrays”.
+buffer + 2 – displacement for 3rd element in the array of 5 two dimensional arrays.
+*(buffer + 2) – dereferencing, i.e. its type is now two dimensional array.
+*(buffer + 2) + 1 – displacement to access 2nd element in the array of 7 one dimensional arrays.
+*( *(buffer + 2) + 1) – dereferencing (accessing), now the type of expression “*( *(buffer + 2) + 1)” is an array of integers.
+*( *(buffer + 2) + 1) + 2 – displacement to get element at 3rd position in the single dimension array of integers.
+*( *( *(buffer + 2) + 1) + 2) – accessing the element at 3rd position (the overall expression type is int now).
+
+
+
+
+
+
+
+we must typecast the 2D array when passing to function.
+/**************************************************************************************
+#include <stdio.h> 
+void print(int *arr, int m, int n) 
+{ 
+    int i, j; 
+    for (i = 0; i < m; i++) 
+      for (j = 0; j < n; j++) 
+        printf("%d ", *((arr+i*n) + j)); 
+} 
+  
+int main() 
+{ 
+    int arr[][3] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}; 
+    int m = 3, n = 3; 
+  
+    // We can also use "print(&arr[0][0], m, n);" 
+    print((int *)arr, m, n); 
+    return 0; 
+} 
+/**************************************************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+How to dynamically allocate a 2D array in C?
+Following are different ways to create a 2D array on heap (or dynamically allocate a 2D array).
+In the following examples, we have considered ‘r‘ as number of rows, ‘c‘ as number of columns and we created a 2D array with r = 3, c = 4 and following values
+
+  1  2  3  4
+  5  6  7  8
+  9  10 11 12 
+
+1) Using a single pointer:
+A simple way is to allocate memory block of size r*c and access elements using simple pointer arithmetic.
+
+/**************************************************************************************
+#include <stdio.h> 
+#include <stdlib.h> 
+  
+int main() 
+{ 
+    int r = 3, c = 4; 
+    int *arr = (int *)malloc(r * c * sizeof(int)); 
+  
+    int i, j, count = 0; 
+    for (i = 0; i <  r; i++) 
+      for (j = 0; j < c; j++) 
+         *(arr + i*c + j) = ++count; 
+  
+    for (i = 0; i <  r; i++) 
+      for (j = 0; j < c; j++) 
+         printf("%d ", *(arr + i*c + j)); 
+  
+   /* Code for further processing and free the  
+      dynamically allocated memory */
+    
+   return 0; 
+} 
+/**************************************************************************************
+Output:
+1 2 3 4 5 6 7 8 9 10 11 12 
+
+2) Using an array of pointers
+We can create an array of pointers of size r. Note that from C99, C language allows variable sized arrays. After creating an array of pointers, we can dynamically allocate memory for every row.
+
+/**************************************************************************************
+#include <stdio.h> 
+#include <stdlib.h> 
+  
+int main() 
+{ 
+    int r = 3, c = 4, i, j, count; 
+  
+    int *arr[r]; 
+    for (i=0; i<r; i++) 
+         arr[i] = (int *)malloc(c * sizeof(int)); 
+  
+    // Note that arr[i][j] is same as *(*(arr+i)+j) 
+    count = 0; 
+    for (i = 0; i <  r; i++) 
+      for (j = 0; j < c; j++) 
+         arr[i][j] = ++count; // Or *(*(arr+i)+j) = ++count 
+  
+    for (i = 0; i <  r; i++) 
+      for (j = 0; j < c; j++) 
+         printf("%d ", arr[i][j]); 
+  
+    /* Code for further processing and free the  
+      dynamically allocated memory */
+  
+   return 0; 
+} 
+/**************************************************************************************
+Output:
+1 2 3 4 5 6 7 8 9 10 11 12
+
+3) Using pointer to a pointer
+We can create an array of pointers also dynamically using a double pointer. Once we have an array pointers allocated dynamically, we can dynamically allocate memory and for every row like method 2.
+/**************************************************************************************
+#include <stdio.h> 
+#include <stdlib.h> 
+  
+int main() 
+{ 
+    int r = 3, c = 4, i, j, count; 
+  
+    int **arr = (int **)malloc(r * sizeof(int *)); 
+    for (i=0; i<r; i++) 
+         arr[i] = (int *)malloc(c * sizeof(int)); 
+  
+    // Note that arr[i][j] is same as *(*(arr+i)+j) 
+    count = 0; 
+    for (i = 0; i <  r; i++) 
+      for (j = 0; j < c; j++) 
+         arr[i][j] = ++count;  // OR *(*(arr+i)+j) = ++count 
+  
+    for (i = 0; i <  r; i++) 
+      for (j = 0; j < c; j++) 
+         printf("%d ", arr[i][j]); 
+  
+   /* Code for further processing and free the  
+      dynamically allocated memory */
+  
+   return 0; 
+} 
+/**************************************************************************************
+Output:
+1 2 3 4 5 6 7 8 9 10 11 12
+
+4) Using double pointer and one malloc call
+/**************************************************************************************
+#include<stdio.h> 
+#include<stdlib.h> 
+  
+int main() 
+{ 
+    int r=3, c=4, len=0; 
+    int *ptr, **arr; 
+    int count = 0,i,j; 
+  
+    len = sizeof(int *) * r + sizeof(int) * c * r; 
+    arr = (int **)malloc(len); 
+  
+    // ptr is now pointing to the first element in of 2D array 
+    ptr = (int *)(arr + r); 
+  
+    // for loop to point rows pointer to appropriate location in 2D array 
+    for(i = 0; i < r; i++) 
+        arr[i] = (ptr + c * i); 
+  
+    for (i = 0; i < r; i++) 
+        for (j = 0; j < c; j++) 
+            arr[i][j] = ++count; // OR *(*(arr+i)+j) = ++count 
+  
+    for (i = 0; i < r; i++) 
+        for (j = 0; j < c; j++) 
+            printf("%d ", arr[i][j]); 
+  
+    return 0; 
+} 
+/**************************************************************************************
+Output:
+1 2 3 4 5 6 7 8 9 10 11 12
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

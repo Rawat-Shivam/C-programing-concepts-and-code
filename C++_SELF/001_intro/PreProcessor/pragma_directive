@@ -1,0 +1,139 @@
+
+#pragma Directive in C/C++
+This directive is a special purpose directive and is used to turn on or off some features. This type of directives are compiler-specific i.e., they vary from compiler to compiler.
+
+
+#pragma startup and #pragma exit: 
+These directives helps us to specify the functions that are needed to run before program startup( before the control passes to main()) and just before program exit (just before the control returns from main()).
+Note: Below program will not work with GCC compilers.
+
+#include<stdio.h>  
+    
+void func1();  
+void func2();  
+    
+#pragma startup func1  
+#pragma exit func2  
+    
+void func1()  
+{  
+    printf("Inside func1()\n");  
+}  
+    
+void func2()  
+{  
+    printf("Inside func2()\n");     
+}  
+    
+int main()  
+{  
+    printf("Inside main()\n");  
+        
+    return 0;  
+}  
+Output:
+
+
+Inside func1()
+Inside main()
+Inside func2()
+The above code will produce the output as given below when run on GCC compilers:
+
+Inside main()
+This happens because GCC does not support #pragma startup or exit. However, you can use the below code for a similar output on GCC compilers.
+
+#include<stdio.h>  
+    
+void func1();  
+void func2();  
+    
+void __attribute__((constructor)) func1();  
+void __attribute__((destructor)) func2();  
+    
+void func1()  
+{  
+    printf("Inside func1()\n");  
+}  
+    
+void func2()  
+{  
+    printf("Inside func2()\n");   
+}  
+    
+int main()  
+{  
+    printf("Inside main()\n");  
+        
+    return 0;  
+}  
+Output:
+Inside func1()
+Inside main()
+Inside func2()
+
+
+#pragma warn Directive: This directive is used to hide the warning messages which are displayed during compilation. This may be useful for us when we have a large program and we want to solve all the errors before looking on warnings then by using it we can focus on errors by hiding all warnings. we can again let the warnings be visible by making slight changes in syntax.
+Syntax:
+
+#pragma warn +xxx (To show the warning)
+#pragma warn -xxx (To hide the warning)
+#pragma warn .xxx (To toggle between hide and show)
+
+We can hide the warnings as shown below:
+
+#pragma warn -rvl: This directive hides those warning which are raised when a function which is supposed to return a value does not return a value.
+#pragma warn -par: This directive hides those warning which are raised when a function does not uses the parameters passed to it.
+#pragma warn -rch: This directive hides those warning which are raised when a code is unreachable. For example: any code written after the return statement in a function is unreachable.
+
+#pragma GCC poison: This directive is supported by the GCC compiler and is used to remove an identifier completely from the program. If we want to block an identifier then we can use the #pragma GCC poison directive.
+
+
+// Program to illustrate the  
+// #pragma GCC poison directive 
+  
+#include<stdio.h> 
+  
+#pragma GCC poison printf 
+  
+int main() 
+{ 
+    int a=10; 
+      
+    if(a==10) 
+    { 
+        printf("GEEKSFORGEEKS"); 
+    } 
+    else
+        printf("bye"); 
+  
+    return 0; 
+} 
+The above program will give the below error:
+
+prog.c: In function 'main':
+prog.c:14:9: error: attempt to use poisoned "printf"
+         printf("GEEKSFORGEEKS");
+         ^
+prog.c:17:9: error: attempt to use poisoned "printf"
+         printf("bye");
+
+
+#pragma GCC dependency: The #pragma GCC dependency allows you to check the relative dates of the current file and another file. If the other file is more recent than the current file, a warning is issued. This is useful if the current file is derived from the other file, and should be regenerated.
+
+#pragma GCC system_header: This pragma takes no arguments. It causes the rest of the code in the current file to be treated as if it came from a system header.
+
+
+#pragma once: The #pragma once directive has a very simple concept. The header file containing this directive is included only once even if the programmer includes it multiple times during a compilation. This is not included in any ISO C++ standard. This directive works similar to the #include guard idiom. Use of #pragma once saves the program from multiple inclusion optimisation.
+Syntax:
+
+#pragma once
+
+
+
+
+
+
+
+
+
+

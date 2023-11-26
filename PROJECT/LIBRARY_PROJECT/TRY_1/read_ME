@@ -1,0 +1,50 @@
+
+this file is for understanding what we have to do
+
+
+this is the library project self TRY implementation
+just to create a design .
+
+
+AIM: library inventory management system(check IN/OUT)
+	1)books
+	2)periodicals
+	3)DVD
+
+
+
+
+FUNCTIONALITY:
+1)import library inventory from file
+	: books.dat, dvd.dat, periodicals.dat  are  different files
+	: for simplicity assume we have only one copy of the item in inventory
+	: each item is assumed to be checkd in when it is imported.
+
+2)mainMenu diaplay
+
+3)display of entire library or books/dvd/perodicals
+	:each item in one line display
+	:in single line one item with comma seprated details/feilds
+
+	:numeric id range
+	:status(IN/OUT)
+	:author
+	:date
+	:book name
+	:publishing house
+
+4)check out item for a user and if user access checked out item say WARNING
+
+5)same above for check in item if already checked in
+
+
+
+
+FILE ORGANISATION:
+1) the first line in each file represent : num_items X
+	: "NUM_ITEMS" is a string
+	: X is an integer 
+2) each entry is seprated by a empty line
+3) when ascii files are created each line is terminated with a linefeed character
+ 
+

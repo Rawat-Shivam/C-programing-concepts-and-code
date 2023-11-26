@@ -1,0 +1,229 @@
+
+
+std::istream_iterator and std::ostream_iterator in C++ STL
+
+The STL is a very powerful library in C++. It is strongly built on the principles of template programming.
+
+
+The STL library has three main components :
+
+Containers: These classes define the data structures which are used to contain the data. The data may be stored in linked lists, or trees or arrays. The containers provided in the STL are vector, dequeue, list, forward list, set, multiset, map and multimap.
+Algorithms: The STL library also provides us functions to process the data stored in containers. These functions are provided in the algorithm header file
+Iterators: Iterators are the link between the Containers and the Algorithms. They are the common interface to these classes. An Iterator is an object which can be used to iterator over the elements in a container. Thus iterators are used by Algorithms to modify the containers.
+
+
+All three components are so designed that they confirm to the principles of data abstraction. Thus any object which holds data and behaves like a container, is a container. Similarly, any iterator which sweeps through the elements in a container is an iterator.
+
+
+
+If an iterator can be used to access elements of a data container, then what about streams? In keeping with the design, Streams too are data containers and so C++ provides us with iterators to iterate over the elements present in any stream. These iterators are called Stream Iterators. To use these iterators the iterator header file must be included.
+
+
+Stream iterators are either input stream iterator or output stream iterator. The classes for these iterators are istream_iterator and ostream_iterator. These iterators behave like input iterators and output iterators respectively .
+
+===================================================================================================================================
+
+istream_iterator
+
+Class Definition for istream_iterator
+
+namespace std {
+    template < typename T, typename charT=char, 
+               typename traits=char_traits <charT> >
+    class istream_iterator;
+}
+Syntax :
+
+istream_iterator<T>(stream)
+T:      Template parameter for specifying type of data
+stream: The object representing the stream
+ostream_iterator<T>(stream, delim).
+stream: The object representing the stream.
+T:      Template Parameter for data type in the stream
+delim:  An optional char sequence that is used to 
+        separate the data items while displaying them.
+
+
+Note :
+
+Using an iterator we can only access elements of one type only.
+istream_iterator has a special state end of stream iterator which is acquired when the end of the stream is reached or when an input operation fails. The end of stream iterator is returned by the default constructor.
+ostream_iterator
+
+Class Definition for ostream_iterator
+
+namespace std {
+    template < typename T, typename charT=char, 
+               typename traits=char_traits <charT> >
+    class ostream_iterator;
+}
+Syntax :
+
+OutputIterator copy (InputIterator first, InputIterator last, OutputIterator result);
+
+first: Input Iterator to the first element 
+in source from where elements need to be copied.
+last:  Input Iterator to the last element 
+in source till where elements need to be copied.
+result: Output iterator to the first element 
+in the destination container to where elements will copied.
+
+Return Value: Iterator pointing to the last element that was copied to the destination.
+
+The second and third template arguments have a default values assigned to them. We only need to specify the first template parameter which specifies the type of data present in the stream i.e whether the stream contains integers, floats or strings.
+
+Examples :
+
+istream_iterator cin_it(cin) is an iterator for the stream cin.
+ostream_iterator cout_it(cout, " ") is an iterator for the stream cout.
+ostream_iterator cout_it(cout) is an iterator for stream cout, with no 
+
+
+The advantage of stream iterators is that they provide a common interface to access elements in I/O stream, file streams and also other stream to external physical devices.
+
+Once an iterator to the respective stream has been obtained the code that follows is nearly same form all types of streams.
+Thus tasks like reading from an input stream and reading from another external stream become similar.
+Stream Iterators allow us access to all the powerful STL algorithms like for_each, replace_if which take an input range to operate on. A particularly useful function is the copy() function. This function is used to copy the elements from one container to another.
+Using the copy() function, we can easily transfer data from a stream to a container and vice-versa. Here are a few example programs to demonstrate working with stream iterators
+
+
+
+// Cpp program to illustrate 
+// Read a bunch of integers from the input stream 
+// and print them to output stream 
+
+#include <algorithm> 
+#include <iostream> 
+#include <iterator> 
+
+using namespace std; 
+int main() 
+{ 
+
+	// Get input stream and end of stream iterators 
+	istream_iterator<int> cin_it(cin); 
+	istream_iterator<int> eos; 
+
+	// Get output stream iterators 
+	ostream_iterator<int> cout_it(cout, " "); 
+
+	// We have both input and output iterators, now we can treat them 
+	// as containers. Using copy function we transfer data from one 
+	// container to another. 
+	// Copy elements from input to output using copy function 
+	copy(cin_it, eos, cout_it); 
+
+	return 0; 
+} 
+Input: 1 2 3 4 5 
+Output: 1 2 3 4 5
+
+
+
+// Cpp program to illustrate 
+// Read a bunch of strings from a file 
+// sort them lexicographically and print them to output stream 
+  
+#include <algorithm> 
+#include <fstream> 
+#include <iostream> 
+#include <iterator> 
+#include <string> 
+#include <vector> 
+  
+using namespace std; 
+int main() 
+{ 
+  
+    // Define a vector to store the strings received from input 
+    vector<string> strings_v; 
+  
+    // Define the filestream object used to read data from file 
+    ifstream fin("input_file.txt"); 
+  
+    // Get input stream and end of stream iterators 
+    istream_iterator<string> fin_it(fin); 
+    istream_iterator<string> eos; 
+  
+    // Get output stream iterators 
+    ostream_iterator<string> cout_it(cout, " "); 
+  
+    // Copy elements from input to vector using copy function 
+    copy(fin_it, eos, back_inserter(strings_v)); 
+  
+    // Sort the vector 
+    sort(strings_v.begin(), strings_v.end()); 
+  
+    // Copy elements from vector to output 
+    copy(strings_v.begin(), strings_v.end(), cout_it); 
+  
+    return 0; 
+} 
+Contents of File "input_file.txt": quick brown fox jumps over the lazy dog
+Output: brown dog fox jumps lazy over quick the 
+
+
+
+
+
+// Cpp program to illustrate 
+
+// Read a bunch of integers from the stream 
+// print the sorted order of even integers only 
+
+#include <algorithm> 
+#include <iostream> 
+#include <iterator> 
+#include <vector> 
+
+using namespace std; 
+int main() 
+{ 
+
+	// Define a vector to store the even integers received from input 
+	vector<int> vi; 
+
+	// Get input stream and end of stream iterators 
+	istream_iterator<int> cin_it(cin); 
+	istream_iterator<int> eos; 
+
+	// Get output stream iterators 
+	ostream_iterator<int> cout_it(cout, " "); 
+
+	// Copy even integer elements from input to vector using for_each function 
+	for_each(cin_it, eos, [&](int a) { 
+		if (a % 2 == 0) { 
+			// if a is even push it to vector 
+			vi.push_back(a); 
+		} 
+	}); 
+
+	// Sort the vector 
+	sort(vi.begin(), vi.end()); 
+
+	// Copy elements from vector to output 
+	copy(vi.begin(), vi.end(), cout_it); 
+
+	return 0; 
+} 
+
+
+Input: 1 4 3 2 6 8 31 52 
+Output: 2 4 6 8 52 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

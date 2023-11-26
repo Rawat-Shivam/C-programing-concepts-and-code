@@ -1,0 +1,59 @@
+
+
+
+
+strstr() in C/C++
+In C++, std::strstr() is a predefined function used for string handling. string.h is the header file required for string functions.
+
+This function takes two strings s1 and s2 as an argument and finds the first occurrence of the sub-string s2 in the string s1. The process of matching does not include the terminating null-characters(‘\0’), but function stops there.
+
+char *strstr (const char *s1, const char *s2);
+
+Parameters:
+s1: This is the main string to be examined.
+s2: This is the sub-string to be searched in s1 string.
+Return Value: This function returns a pointer points to the first character of the found s2 in s1 otherwise a null pointer if s2 is not present in s1. If s2 points to an empty string, s1 is returned.
+
+
+
+Application : Replace a string with another
+In this example with the help of strstr() function we first searches for the occurrence of STL sub-string in s1 and after that replaces that word with Strings.
+
+// CPP program to illustrate strstr() 
+#include <string.h> 
+#include <stdio.h> 
+  
+int main() 
+{ 
+    // Take any two strings 
+    char s1[] = "Fun with STL"; 
+    char s2[] = "STL"; 
+    char* p; 
+  
+    // Find first occurrence of s2 in s1 
+    p = strstr(s1, s2); 
+  
+    // Prints the result 
+    if (p) { 
+        strcpy(p, "Strings"); 
+        printf("%s", s1); 
+    } else
+        printf("String not found\n"); 
+  
+    return 0; 
+} 
+Output:
+
+Fun with Strings
+
+
+
+
+
+
+
+
+
+
+
+

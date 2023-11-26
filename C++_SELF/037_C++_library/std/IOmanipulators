@@ -1,0 +1,214 @@
+
+std::setbase, std::setw , std::setfill in C++
+The useful input/output manipulators are std::setbase, std::setw and std::setfill. These are defined in and are quite useful functions.
+
+
+
+std::base : Set basefield flag; Sets the base-field to one of its possible values: dec, hex or oct according to argument base.
+
+
+
+// CPP Program to illustrate 
+// std::setbase manipulator 
+#include <iostream> 
+#include <iomanip> // std::setbase 
+  
+int main() 
+{ 
+    // set base to hexadecimal 
+    std::cout << std::setbase(16); 
+  
+    // displaying 255 in hexadecimal 
+    std::cout << 255 << std::endl; 
+  
+    // set base to Octal 
+    std::cout << std::setbase(8); 
+  
+    // displaying 255 in Octal 
+    std::cout << 255 << std::endl; 
+    return 0; 
+} 
+Output:
+
+ff
+377
+
+
+
+
+std::setw : Set field width; Sets the field width to be used on output operations. Behaves as if member width were called with n as argument on the stream on which it is inserted/extracted as a manipulator (it can be inserted/extracted on input streams or output streams).
+Syntax :
+
+std::setw (int n);
+where n is Number of characters to 
+be used as field width.
+// CPP Program to illustrate 
+// std::setw manipulator 
+#include <iostream> 
+#include <iomanip> // std::setw 
+  
+int main() 
+{ 
+  
+    // set width of 10 
+    std::cout << std::setw(10); 
+    std::cout << 100 << std::endl; 
+  
+    std::string str = "GFG"; 
+  
+    // set width of 12 
+    std::cout << std::setw(12); 
+  
+    std::cout << str << std::endl; 
+    return 0; 
+} 
+Output:
+
+       100
+         GFG
+
+Note: Here argument given to setw() is minimum width of the output, so if we have output with more width than argument’s value then output width will not be exactly the argument given to setw() but will be equal to the output size(i.e., the output will not get truncated). Default width of setw() is 0.
+
+
+
+
+
+std::setfill : Set fill character; Sets c as the stream’s fill character. Behaves as if member fill were called with c as argument on the stream on which it is inserted as a manipulator (it can be inserted on output streams).
+
+Syntax :
+
+std::setfill (char_type c);
+char_type is the type of characters 
+used by the stream (i.e., its first class template 
+parameter, charT).
+
+
+
+
+// CPP Program to test std::setfill manipulator 
+#include <iostream> 
+#include <iomanip> // std::setfill, std::setw 
+  
+int main() 
+{ 
+    // setfill is x and width is set as 10 
+    std::cout << std::setfill('x') << std::setw(10); 
+  
+    std::cout << 77 << std::endl; 
+  
+    std::string str = "Geeks"; 
+  
+    // setfill is G and width is set as 10 
+    // And std::left is used set str to left side 
+    std::cout << std::left << std::setfill('G') << std::setw(10); 
+  
+    std::cout << str << std::endl; 
+    return 0; 
+} 
+Output:
+
+xxxxxxxx77
+GeeksGGGGG
+
+
+Pattern using std::setw and std::fill :
+
+// CPP Program to print 
+// pattern using std::setw and std::fill 
+#include <iostream> 
+#include <iomanip> // std::setfill, std::setw 
+  
+int main() 
+{ 
+    int n = 5; 
+    for (int i = 1; i <= n; i++) { 
+        std::cout << std::left << std::setfill(' ') << std::setw(n); 
+        std::cout << std::string(i, '*') << std::endl; 
+    } 
+} 
+Output:
+
+*
+**
+***
+****
+*****
+
+
+
+
+
+
+
+
+Set position with seekg() in C++ language file handling
+seekg() is a function in the iostream library (part of the standard library) that allows you to seek to an arbitrary position in a file. It is used in file handling to sets the position of the next character to be extracted from the input stream from a given file. For example :
+
+Input : "Hello World" 
+Output : World
+Syntax – There are two syntax for seekg() in file handling :
+
+istream&seekg(streampos position);
+istream&seekg(streamoff offset, ios_base::seekdir dir);
+
+position : is the new position in the stream buffer.
+offset : is an integer value of type streamoff representing the offset in the stream’s buffer. It is relative to the dir parameter.
+dir : is the seeking direction. It is an object of type ios_base::seekdir that can take any of the following constant values.
+There are 3 direction we use for offset value :
+
+ios_base::beg (offset from the beginning of the stream’s buffer).
+ios_base::cur (offset from the current position in the stream’s buffer).
+ios_base::end (offset from the end of the stream’s buffer).
+
+
+Code –
+
+// Code to demonstrate the seekg function in file handling 
+#include <fstream> 
+#include <iostream> 
+  
+using namespace std; 
+   
+int main (int argc, char** argv) 
+{ 
+    // Open a new file for input/output operations 
+    // discarding any current in the file (assumes  
+    // a length of zero on opening) 
+    fstream myFile("test.txt", ios::in | ios::out | ios::trunc); 
+      
+    // Add the characters "Hello World" to the file 
+    myFile << "Hello World"; 
+      
+    // Seek to 6 characters from the beginning of the file 
+    myFile.seekg(6, ios::beg); 
+      
+    // Read the next 5 characters from the file into a buffer 
+    char A[6]; 
+    myFile.read(A, 5); 
+      
+    // End the buffer with a null terminating character 
+    A[5] = 0; 
+      
+    // Output the contents read from the file and close it  
+    cout << buffer << endl; 
+      
+    myFile.close(); 
+}  
+Output –
+
+World
+Note –
+If we previously get an end of file on the stream, seekg will not reset it but will return an error in many implementations. – use the clear() method to clear the end of file bit first. This is a relatively common mistake and if seekg() is not performing as expected.
+
+
+
+
+
+
+
+
+
+
+
+
+

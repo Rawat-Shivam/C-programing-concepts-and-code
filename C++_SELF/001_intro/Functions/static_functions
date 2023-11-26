@@ -1,0 +1,13 @@
+
+
+In C++, a static member function of a class cannot be virtual.
+Also, static member function cannot be const and volatile. 
+In C++, virtual functions can be private and can be overridden by the derived class.
+static members are only declared in class declaration, not defined. They must be explicitly defined outside the class using scope resolution operator.
+
+
+
+
+
+
+

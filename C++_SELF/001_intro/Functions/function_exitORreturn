@@ -1,0 +1,110 @@
+
+
+exit()
+
+void exit ( int status );  
+exit() terminates the process normally.
+status: Status value returned to the parent process. Generally, a status value of 0 or EXIT_SUCCESS indicates success, and any other value or the constant EXIT_FAILURE is used to indicate an error. exit() performs following operations.
+* Flushes unwritten buffered data.
+* Closes all open files.
+* Removes temporary files.
+* Returns an integer exit status to the operating system.
+
+The C standard atexit() function can be used to customize exit() to perform additional actions at program termination.
+
+When exit() is called, any open file descriptors belonging to the process are closed and any children of the process are inherited by process 1, init, and the process parent is sent a SIGCHLD signal.
+
+The mystery behind exit() is that it takes only integer args in the range 0 – 255 . Out of range exit values can result in unexpected exit codes. An exit value greater than 255 returns an exit code modulo 256.
+For example, exit 9999 gives an exit code of 15 i.e. (9999 % 256 = 15).
+
+Below is the C implementation to illustrate the above fact:
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <unistd.h> 
+#include <sys/types.h> 
+#include <sys/wait.h> 
+  
+int main(void) 
+{ 
+    pid_t pid = fork(); 
+      
+    if ( pid == 0 ) 
+    { 
+       exit(9999); //passing value more than 255 
+    } 
+  
+    int status; 
+    waitpid(pid, &status, 0); 
+  
+    if ( WIFEXITED(status) ) 
+    { 
+        int exit_status = WEXITSTATUS(status); 
+          
+        printf("Exit code: %d\n", exit_status); 
+    } 
+  
+return 0; 
+} 
+Output:
+Exit code: 15
+
+
+abort()
+
+void abort ( void ); 
+Unlike exit() function, abort() may not close files that are open. It may also not delete temporary files and may not flush stream buffer. Also, it does not call functions registered with atexit().
+
+This function actually terminates the process by raising a SIGABRT signal, and your program can include a handler to intercept this signal 
+
+
+assert()
+
+void assert( int expression ); 
+If expression evaluates to 0 (false), then the expression, sourcecode filename, and line number are sent to the standard error, and then abort() function is called. If the identifier NDEBUG (“no debug”) is defined with #define NDEBUG then the macro assert does nothing.
+ 
+
+//int atexit (void (*func)(void));
+//void _Exit(int exit_code);
+
+
+The _Exit() function in C/C++ gives normal termination of a program without performing any cleanup tasks. 
+For example it does not execute functions registered with atexit.
+
+// C++ program to demonstrate use of _Exit() 
+#include <stdio.h> 
+#include <stdlib.h> 
+int main(void) 
+{ 
+    int exit_code = 10; 
+    printf("Termination using _Exit"); 
+    _Exit(exit_code); 
+  
+} 
+Output: //no output
+
+
+
+Showing difference through programs:
+
+// A C++ program to show difference 
+// between exit() and _Exit() 
+#include<bits/stdc++.h> 
+using namespace std; 
+  
+void fun(void) 
+{ 
+   cout << "Exiting"; 
+} 
+  
+int main() 
+{ 
+   atexit(fun); 
+   exit(10); 
+} 
+Output
+Exiting
+
+
+
+
+

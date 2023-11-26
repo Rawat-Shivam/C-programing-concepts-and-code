@@ -1,0 +1,15 @@
+
+Pure Functions
+A function is called pure function if it always returns the same result for same argument values and it has no side effects like modifying an argument (or global variable) or outputting something. The only result of calling a pure function is the return value. Examples of pure functions are strlen(), pow(), sqrt() etc. Examples of impure functions are printf(), rand(), time(), etc.
+
+If a function is known as pure to compiler then Loop optimization and subexpression elimination can be applied to it. In GCC, we can mark functions as pure using the “pure” attribute.
+
+__attribute__ ((pure)) return-type fun-name(arguments1, …)
+{
+    /* function body */
+}
+
+
+
+
+

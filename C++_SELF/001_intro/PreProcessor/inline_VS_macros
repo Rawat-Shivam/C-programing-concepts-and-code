@@ -1,0 +1,38 @@
+
+
+
+
+1. Inline :
+ function that is defined by the inline keyword. An inline function is a short function that is expanded by the compiler. And its arguments are evaluated only once. An inline functions are the short length functions
+
+// Inline function 
+inline int Maximum(int a, int b) 
+{ 
+    return (a > b) ? a : b; 
+} 
+
+2. Macro :
+Before the program compilation, the preprocessor examines the program whenever the preprocessor detects the macros then preprocessor replaces the macro by the macro definition.
+
+Through inline function, the class’s data members can be accessed.	
+In the case of inline function, the program can be easily debugged.
+In the case of inline, the arguments are evaluated only once.	
+In C++, inline may be defined either inside the class or outside the class.	
+In C++, inside the class, the short length functions are automatically made the inline functions.	
+An inline function is defined by the inline keyword.	
+
+Whereas the macros are defined by the #define keyword.
+Whereas macro can’t access the class’s data members.
+Whereas in the case of macros, the program can’t be easily debugged.
+Whereas in the case of macro, the arguments are evaluated every time whenever macro is used in the program.
+Whereas in the case of macro, the arguments are evaluated every time whenever macro is used in the program.
+Whereas the macro is all the time defined at the beginning of the program.
+While the macro is specifically defined.
+
+
+
+
+
+
+
+	

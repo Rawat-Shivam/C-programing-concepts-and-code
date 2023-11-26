@@ -1,0 +1,57 @@
+
+
+
+std::stod, std::stof, std::stold in C++
+std::stod() : It convert string into double.
+Syntax:
+double stod( const std::string& str, std::size_t* pos = 0 );
+double stod( const std::wstring& str, std::size_t* pos = 0 );
+Return Value: return a value of type double
+Parameters
+str : the string to convert
+pos : address of an integer to store the 
+number of characters processed. This parameter can also be 
+a null pointer, in which case it is not used.
+
+
+
+
+std::stof : It convert string into float.
+Syntax:
+float stof( const string& str, size_t* pos = 0 );
+float stof( const wstring& str, size_t* pos = 0 );
+Parameters
+str : the string to convert
+pos : address of an integer to store the number of characters processed
+This parameter can also be a null pointer, in which case it is not used.
+Return value: it returns value of type float.
+
+
+
+
+
+
+std::stold : It convert string into long double.
+Syntax:
+long double stold( const string& str, size_t *pos = 0 );
+long double stold (const wstring& str, size_t* pos = 0);
+Parameters : 
+str : the string to convert
+pos : address of integer to store the index of the first unconverted character.
+This parameter can also be a null pointer, in which case it is not used.
+Return value : it returns value of type long double.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

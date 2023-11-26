@@ -1,0 +1,81 @@
+
+
+
+
+1. Set
+(i) Stores the values in sorted order.
+(ii) Stores only unique values.
+(iii) Elements can only be inserted or deleted but cannot be modified.
+(iv) We can erase more than 1 element by giving start iterator and end iterator position.
+(v) Traversal using iterators.
+(vi) Sets are implemented as Binary Search Tree.
+
+
+2. Multiset
+(i) Stores elements in sorted order.
+(ii) It allows storage of multiple elements.
+(iii) We can erase more than 1 element by giving start iterator and end iterator.
+Note:- All other properties similar to set.
+
+
+3. Unordered_set
+(i) Elements can be stored in any order. ( no sorted order )
+(ii) Stores only unique values.
+(iii) Hash-table used to store elements.
+(iv) We can erase only the element for which iterator position is given.
+Note:- All other properties similar to set.
+
+
+4. Unordered_multiset
+(i) Elements can be stored in any order.
+(ii) Duplicate elements can be stored.
+(iii) Hash-table used to store elements.
+(iv) We can erase only the element for which iterator position is given.
+Note:- All other properties similar to set.
+
+
+
+
+Conclusion :
+In simple words, set is a container that stores sorted and unique elements. If unordered is added means elements are not sorted. If multiset is added means duplicate elements storage is allowed.
+
+
+
+
+
+
+
+
+
+
+map vs unordered_map in C++
+
+                  | map             | unordered_map
+---------------------------------------------------------
+Ordering        | increasing  order   | no ordering
+                | (by default)        |
+
+Implementation  | Self balancing BST  | Hash Table
+                | like Red-Black Tree |  
+
+Use std::map when
+
+You need ordered data.
+You would have to print/access the data (in sorted order).
+You need predecessor/successor of elements.
+See advantages of BST over Hash Table for more cases.
+
+
+Use std::unordered_map when
+
+You need to keep count of some data (Example – strings) and no ordering is required.
+You need single element access i.e. no traversal.
+
+
+
+
+
+
+
+
+

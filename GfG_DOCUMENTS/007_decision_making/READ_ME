@@ -1,0 +1,173 @@
+if statement
+if..else statements
+nested if statements
+if-else-if ladder
+switch statements
+Jump Statements:
+break
+continue
+goto
+return
+
+
+
+
+
+
+
+
+
+
+
+Switch case statements are a substitute for long if statements that compare a variable to several integral values
+
+The switch statement is a multiway branch statement. It provides an easy way to dispatch execution to different parts of code based on the value of the expression.
+Switch is a control statement that allows a value to change control of execution.
+The expression provided in the switch should result in a constant value otherwise it would not be valid.
+Valid expressions for switch:
+
+// Constant expressions allowed
+switch(1+2+23)
+switch(1*2+3%4)
+
+// Variable expression are allowed provided
+// they are assigned with fixed values
+switch(a*b+c*d)
+switch(a+b+c)
+
+Duplicate case values are not allowed.
+
+The break statement is used inside the switch to terminate a statement sequence. When a break statement is reached, the switch terminates, and the flow of control jumps to the next line following the switch statement.
+
+The break statement is optional. If omitted, execution will continue on into the next case. The flow of control will fall through to subsequent cases until a break is reached.
+
+Nesting of switch statements are allowed, which means you can have switch statements inside another switch. However nested switch statements should be avoided as it makes program more complex and less readable.
+
+The expression used in switch must be integral type ( int, char and enum). Any other type of expression is not allowed.
+
+the default block can be placed anywhere. The position of default doesn’t matter, it is still executed if no match found.
+
+The integral expressions used in labels must be a constant expressions
+
+The statements written above cases are never executed After the switch statement, the control transfers to the matching case, the statements written before case are not executed.
+/******************************************************************************
+// Statements before all cases are never executed 
+#include <stdio.h> 
+int main() 
+{ 
+   int x = 1; 
+   switch (x) 
+   { 
+       x = x + 1;  // This statement is not executed 
+       case 1: printf("Choice is 1"); 
+               break; 
+       case 2: printf("Choice is 2"); 
+                break; 
+       default: printf("Choice other than 1 and 2"); 
+                break;                    
+   } 
+   return 0; 
+}  
+*********************************************************************************/
+
+In C++ switch statement, the expression of each case label must be an integer constant expression.
+For example, the following program fails in compilation.
+*********************************************************************************/
+/* Using non-const in case label */
+#include<stdio.h> 
+int main() 
+{ 
+  int i = 10; 
+  int c = 10; 
+  switch(c)  
+  { 
+    case i: // not a "const int" expression 
+         printf("Value of c = %d", c); 
+         break; 
+    /*Some more cases */
+                     
+  } 
+  return 0; 
+} 
+*********************************************************************************/
+
+Putting const before i makes the above program work.
+*********************************************************************************/
+#include<stdio.h> 
+int main() 
+{ 
+  const int i = 10; 
+  int c = 10; 
+  switch(c)  
+  { 
+    case i:  // Works fine 
+         printf("Value of c = %d", c); 
+         break; 
+    /*Some more cases */
+                     
+  } 
+  return 0; 
+} 
+*********************************************************************************/
+Note : The above fact is only for C++. In C, both programs produce an error. In C, using an integer literal does not cause an error.
+
+Program to find the largest number between two numbers using switch case:
+*********************************************************************************/
+#include<stdio.h> 
+int main() 
+{ 
+  int n1=10,n2=11; 
+  
+  // n1 > n2 (10 > 11) is false so using   
+  // logical operator '>', n1 > n2 produces 0 
+  // (0 means false, 1 means true) So, case 0  
+  // is executed as 10 > 11 is false. Here we  
+  // have used type cast to convert boolean to int,  
+  // to avoid warning. 
+  
+  switch((int)(n1 > n2))  
+  { 
+    case 0:   
+         printf("%d is the largest\n", n2); 
+         break; 
+    default: 
+         printf("%d is the largest\n", n1); 
+  } 
+  
+  // n1 < n2 (10 < 11) is true so using logical  
+  // operator '<', n1 < n2 produces 1 (1 means true,  
+  // 0 means false) So, default is executed as we 
+  // don't have case 1 to be executed. 
+  
+  switch((int)(n1 < n2)) 
+  { 
+    case 0:   
+         printf("%d is the largest\n", n1); 
+         break; 
+    default: 
+         printf("%d is the largest\n", n2); 
+  } 
+  
+  return 0; 
+} 
+*********************************************************************************/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,125 @@
+
+
+std::stoul and std::stoull in C++
+std::stoul
+
+Convert string to unsigned integer. Parses str interpreting its content as an integral number of the specified base, which is returned as an unsigned long value.
+
+unsigned long stoul 
+(const string&  str, size_t* idx = 0, int base = 10);
+Parameters :
+str : String object with the 
+representation of an integral number.
+idx : Pointer to an object of type size_t, 
+whose value is set by the function to position of the 
+next character in str after the numerical value.
+This parameter can also be a null pointer, in which case
+it is not used.
+base : Numerical base (radix) that determines
+the valid characters and their interpretation.
+If this is 0, the base used is determined by the format in
+the sequence.Notice that by default this argument is 10, not 0. 
+
+
+
+
+
+
+
+
+
+
+std::stoull
+
+Convert string to unsigned long long. Parses str interpreting its content as an integral number of the specified base, which is returned as a value of type unsigned long long.
+
+unsigned long long stoull 
+(const string&  str, size_t* idx = 0, int base = 10);
+Parameters :
+str : String object with the representation 
+of an integral number.
+idx : Pointer to an object of type size_t,
+whose value is set by the function to position of the next 
+character in str after the numerical value. This parameter can 
+also be a null pointer, in which case it is not used.
+base : Numerical base (radix) that determines 
+the valid characters and their interpretation.
+If this is 0, the base used is determined by the format in the
+sequence. Notice that by default this argument is 10, not 0. 
+
+
+
+
+
+
+
+
+
+
+
+
+// CPP code to convert hexadecimal 
+// string to int 
+#include <bits/stdc++.h> 
+using namespace std; 
+
+int main() 
+{ 
+	// Hexadecimal string 
+	string str = "FF"; 
+
+	// Converted integer 
+	unsigned long num = stoul(str, nullptr, 16); 
+
+	// Printing the integer 
+	cout << num << "\n"; 
+
+	// Hexadecimal string 
+	string st = "FFFFFF"; 
+
+	// Converted long long 
+	unsigned long long val = stoull(st, nullptr, 16); 
+
+	// Printing the long long 
+	cout << val; 
+	return 0; 
+} 
+Output:
+
+255
+16777215
+
+
+
+Another Example : Program to compare two strings containing hexadecimal values
+Here stoul is used, but in cases of numbers exceeding unsigned long value, stoull is used.
+// CPP code to compare two 
+// hexadecimal string 
+#include <bits/stdc++.h> 
+using namespace std; 
+
+int main() 
+{ 
+	// Hexadecimal string 
+	string s1 = "4F"; 
+	string s2 = "A0"; 
+
+	// Converted integer 
+	unsigned long n1 = stoul(s1, nullptr, 16); 
+	unsigned long n2 = stoul(s2, nullptr, 16); 
+
+	// Compare both string 
+	if (n1 > n2) 
+		cout << s1 << " is greater than " << s2; 
+	else if (n2 > n1) 
+		cout << s2 << " is greater than " << s1; 
+	else
+		cout << "Both " << s1 << " and " << s2 << " are equal"; 
+	return 0; 
+} 
+A0 is greater than 4F
+
+
+
+
+
